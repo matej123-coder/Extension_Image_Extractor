@@ -5,8 +5,9 @@ export interface ExtractedImage{
     height: number;
 }
 export interface Images{
-    image: Promise<Blob>;
+    image: Blob;
     imageType: ImageFormat;
+    imageUrl: string;
     width:number;
     height: number;
     pageNumber: number;

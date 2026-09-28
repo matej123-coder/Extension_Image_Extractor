@@ -2,11 +2,13 @@ import { useState } from "react";
 import { loadPdf } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
 import { type Images } from "./types/types";
+import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 function App() {
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [images, setImages] = useState<Images[]>([]);
-
+    const [pdf,setPdf] = useState<PDFDocumentProxy | null>(null);
+    const [loadingPdf, setLoadingPdf] = useState(false);
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.target.files?.[0] || null;
         if (!selectedFile) {
@@ -24,15 +26,38 @@ function App() {
         try {
             const pdf = await loadPdf(selectedFile);
             console.log("Loaded PDF:", pdf);
-
-            const extractedImages = await extractImage(pdf);
-            setImages(extractedImages)
+            setPdf(pdf);
+            
 
 
         } catch (error) {
             console.error("Failed to load PDF:", error);
         } finally {
             setLoading(false);
+        }
+    }
+    async function handleExtractionImages() {
+        if(!pdf){
+            alert("Please select a PDF first.");
+            return;
+        }
+        setLoadingPdf(true)
+
+        try {
+            const extractedImages = await extractImage(pdf);
+            
+
+            const imagesWithUrls = extractedImages.map((image) => ({
+            ...image,
+            imageUrl: URL.createObjectURL(image.image)
+        }));
+
+            setImages(imagesWithUrls)
+        } catch (error) {
+             console.error("Failed to extract images:", error);
+        }
+        finally{
+            setLoading(true);
         }
     }
     return (
@@ -55,7 +80,7 @@ function App() {
                     </label>
                 </div>
                 <div className="extract-btn">
-                    <button> Extract Images</button>
+                    <button onClick={handleExtractionImages}> Extract Images</button>
                 </div>
                 <div className="image-section">
                     <div className="header">
@@ -68,16 +93,17 @@ function App() {
                     </div>
 
                     <div className="image-container">
-                        <div className="image-element">
+                        { images.map((image)=>(
+                             <div className="image-element">
                             <div className="image-object">
-                                <img src="/hello.png" alt="Hello" />
+                                <img src={image.imageUrl} alt="Hello" />
                             </div>
                             <div className="info-box">
                                 <ul className="info-list">
-                                    <li>Width : 600px</li>
-                                    <li>Height : 400px</li>
-                                    <li>Type : PNG</li>
-                                    <li>Page Number : 1</li>
+                                    <li>Width : {image.width}</li>
+                                    <li>Height : {image.height}</li>
+                                    <li>Type : {image.imageType}</li>
+                                    <li>Page Number : {image.pageNumber}</li>
                                 </ul>
                             </div>
                             <div className="download-btn">
@@ -86,6 +112,8 @@ function App() {
                                 </svg> Download Button</button>
                             </div>
                         </div>
+                        ))}
+                       
                         <div className="image-element">
                             <div className="image-object">
                                 <img src="/hello.png" alt="Hello" />
