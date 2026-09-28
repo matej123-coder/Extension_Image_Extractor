@@ -32,6 +32,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
 
             extractedImages.push({
                 image: blob,
+                imageUrl:  URL.createObjectURL(blob),
                 imageType: "png",
                 width: image.width,
                 height: image.height,
