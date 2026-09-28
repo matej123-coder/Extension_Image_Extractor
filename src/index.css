@@ -1,0 +1,200 @@
+*{
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;   
+}
+html,body{
+    font-family: system-ui, arial, sans-serif;
+    letter-spacing: 0.02rem;
+    color: white;
+    background-color: #232323;
+}
+.pdf-container{
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 5.2rem;
+    padding-left: 15.5rem;
+    padding-right: 15.5rem;
+}
+.pdf-container h1{ 
+    font-size:  2.5rem;
+    font-weight: 700;
+    
+}
+.pdf-container h2{
+    font-size: 1.05rem;
+    margin-top: 2.4rem;
+    font-weight: 600;
+}
+.input-field {
+    padding-top: 2.5rem;
+    width: 100%;
+}
+
+.file-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 220px;
+
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    background: #f8fafc;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.file-upload:hover {
+    border-color: #64748b;
+    background: #f1f5f9;
+}
+
+.file-upload:active {
+    transform: scale(0.99);
+}
+
+.file-upload input {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-upload-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 50px;
+    height: 50px;
+
+    margin-bottom: 1rem;
+
+    border-radius: 50%;
+    background: #e2e8f0;
+
+    font-size: 1.5rem;
+    color: #334155;
+}
+
+.file-upload-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.file-upload-text {
+    margin-top: 0.4rem;
+
+    font-size: 0.9rem;
+    color: #64748b;
+}
+.extract-btn{
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+
+}
+.extract-btn button{
+    padding: 1rem 5rem 1rem 5rem ;
+    color: white;
+    background-color: orange;
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.extract-btn button:hover {
+    background-color: #B86A0B;
+}
+.image-section{
+   width: 100%;
+  
+}
+.image-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(min(300px,100%),1fr));
+    gap: 2rem;
+}
+.image-element {
+    border: 2px solid white;
+}
+.image-element img{
+    object-fit: cover;
+    width: 100%;
+    height: auto;
+}
+.image-element .info-box{
+    padding: 1.5rem;
+    
+}
+.info-box .info-list{
+    list-style-type: none;
+    font-size: 17.5px;
+    font-weight: 700;
+}
+.info-box .info-list li{
+    margin-top: 5px;
+}
+.download-btn{
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+
+    
+}
+.download-btn-all{
+    padding: 0 0 1.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+}
+.download-btn button,.download-btn-all button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 5rem ;
+    color: white;
+    background-color: #7454AE;
+    outline: none;
+    border: none;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 700;
+}
+.download-btn button:hover, .download-btn-all button:hover{
+    background-color: #4a3a69;
+}
+.download-btn svg, .download-btn-all svg {
+    width: 30px !important;
+    height: 30px !important;
+    fill: none;
+
+}
+.download-img svg{
+    stroke: white;
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+}
