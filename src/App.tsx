@@ -28,7 +28,7 @@ function App() {
       const pdf = await loadPdf(selectedFile);
       console.log("Loaded PDF:", pdf);
       setPdf(pdf);
-
+    } catch (error) {
       console.error("Failed to load PDF:", error);
     } finally {
       setLoading(false);
