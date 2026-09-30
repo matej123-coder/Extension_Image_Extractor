@@ -19,11 +19,20 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                 continue;
             }
 
-            const args = operatorList.argsArray[i];
-            const imageId = args[0];
+            const imageId = operatorList.argsArray[i][0];
 
+            console.log("Image operation:", {
+                pageNumber,
+                 imageId,
+                operation
+                });
             const image = await new Promise<ExtractedImage>((resolve) => {
                 page.objs.get(imageId, (image:ExtractedImage) => {
+                    console.log("Retrieved Image",{
+                        pageNumber,
+                        imageId,
+                        image   
+                    })
                     resolve(image);
                 });
             });

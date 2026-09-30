@@ -74,6 +74,18 @@ function App() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
+   function handleDownloadImage(index:number){
+
+    const image = images[index];
+
+    const link = document.createElement("a")
+    link.href = image.imageUrl;
+    link.download = `image_${index+1}.${image.imageType}`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link);
+
+  }
   return (
     <>
       <div className="pdf-container">
@@ -102,7 +114,8 @@ function App() {
         <div className="extract-btn">
           <button onClick={handleExtractionImages}> Extract Images</button>
         </div>
-        <div className="image-section">
+        {images.length > 0 && (
+            <div className="image-section">
           <div className="header">
             <h1>All Images</h1>
             <div className="download-btn-all">
@@ -128,8 +141,8 @@ function App() {
           </div>
 
           <div className="image-container">
-            {images.map((image) => (
-              <div className="image-element">
+            {images.map((image,index) => (
+              <div className="image-element" key={index}>
                 <div className="image-object">
                   <img src={image.imageUrl} alt="Hello" />
                 </div>
@@ -142,7 +155,7 @@ function App() {
                   </ul>
                 </div>
                 <div className="download-btn">
-                  <button>
+                  <button onClick={() => handleDownloadImage(index)} >
                     {" "}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -166,6 +179,8 @@ function App() {
             ))}
           </div>
         </div>
+        )}
+        
       </div>
     </>
   );
