@@ -43,7 +43,7 @@ function App() {
 
     try {
       const extractedImages = await extractImage(pdf);
-
+     console.log("This are my extracted images:",extractedImages)
       setImages(extractedImages);
     } catch (error) {
       console.error("Failed to extract images:", error);
