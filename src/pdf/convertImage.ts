@@ -1,10 +1,16 @@
 import type { ImageFormat } from "../types/types";
 
-export default function convertImage(bitmap: ImageBitmap, format: ImageFormat) : Promise<Blob>{
+export default function convertImage(bitmap: ImageBitmap | VideoFrame, format: ImageFormat) : Promise<Blob>{
     const canvas = document.createElement('canvas');
 
+    if(bitmap instanceof ImageBitmap){
     canvas.width = bitmap.width;
     canvas.height = bitmap.height;
+    }
+    else{
+        canvas.width = bitmap.codedWidth;
+        canvas.height = bitmap.codedHeight;
+    }
 
     const ctx = canvas.getContext('2d');
 

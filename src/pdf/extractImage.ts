@@ -16,7 +16,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
             const operation = operatorList.fnArray[i];
 
             if (
-                operation !== pdfjsLib.OPS.paintImageXObject
+                operation !== pdfjsLib.OPS.paintImageXObject && operation !== pdfjsLib.OPS.paintImageXObjectRepeat
             ) {
                 continue;
             }
@@ -29,43 +29,18 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                 operation,
             });
 
-            const image = await new Promise<ExtractedImage | null>((resolve) => {
-                let resolved = false;
+            const image = await new Promise<ExtractedImage | null>((resolve) => (imageId.startsWith("g_") ? page.commonObjs : page.objs).get(imageId, resolve));
 
-                const timeout = setTimeout(() => {
-                    if (!resolved) {
-                        console.warn("TIMEOUT getting image:", {
-                            pageNumber,
-                            imageId,
-                        });
+            if(operatorList.fnArray[i-5] === pdfjsLib.OPS.paintFormXObjectBegin){
+                console.warn("Blur image")
+                continue;
+            }
 
-                        resolved = true;
-                        resolve(null);
-                    }
-                }, 1000);
-
-                page.objs.get(imageId, (image: ExtractedImage | null) => {
-                    if (resolved) return;
-
-                    resolved = true;
-                    clearTimeout(timeout);
-
-                    console.log("Retrieved Image:", {
-                        pageNumber,
-                        imageId,
-                        image,
-                    });
-
-                    resolve(image);
-                });
-            });
-
-            if (!image) {
+            if (!image || !image.bitmap || !image.width || !image.height) {
                 console.warn("Image object is null:", {
                     pageNumber,
                     imageId,
                 });
-
                 continue;
             }
             console.log("IMAGE DEBUG", {
@@ -80,6 +55,36 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                     )
                 ),
             });
+
+            
+            const previousOperations = [74, 10, 9, 12, 1];
+
+        console.log(
+                previousOperations.map(op => ({
+                 op,
+                name: Object.entries(pdfjsLib.OPS).find(
+            ([, value]) => value === op
+             )?.[0],
+            }))
+);          
+        console.log("Previous operations:",{
+            index: i,
+            operation: operation,
+            previousOperations:   previousOperations.map(op => ({
+                 op,
+                name: Object.entries(pdfjsLib.OPS).find(
+            ([, value]) => value === op
+             )?.[0],
+            })),
+        previousArguments: operatorList.fnArray.slice(
+            Math.max(0, i - 5),
+            i
+        ),
+         previousArgs: operatorList.argsArray.slice(
+        Math.max(0, i - 5),
+        i
+    ),
+        });
             console.log("BEFORE convertImage:", {
                 pageNumber,
                 imageId,
@@ -97,7 +102,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                 size: blob.size,
                 type: blob.type,
             });
-
+            
             extractedImages.push({
                 image: blob,
                 imageUrl: URL.createObjectURL(blob),
@@ -107,8 +112,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                 pageNumber,
             });
 
-            console.log("Image added:", extractedImages.length);
-            console.log("Images till now", extractedImages)
+            
         }
     }
 
