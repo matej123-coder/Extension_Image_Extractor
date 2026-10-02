@@ -1,6 +1,6 @@
 import type { ImageFormat } from "../types/types";
 
-export default function convertImage(bitmap: ImageBitmap | VideoFrame, format: ImageFormat) : Promise<Blob>{
+export default function convertImage(bitmap: ImageBitmap | VideoFrame, format: ImageFormat, imageId: number) : Promise<Blob>{
     const canvas = document.createElement('canvas');
 
     if(bitmap instanceof ImageBitmap){
@@ -28,10 +28,11 @@ export default function convertImage(bitmap: ImageBitmap | VideoFrame, format: I
                 : 'image/jpeg';
 
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         canvas.toBlob((blob) => {
             if (!blob) {
-                reject(new Error('Failed to convert image'));
+                console.warn("Hello i didn't converted", imageId)
+                resolve(null);
                 return;
             }
 

@@ -23,15 +23,15 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
 
             const imageId = operatorList.argsArray[i][0];
 
-            console.log("Image operation:", {
-                pageNumber,
-                imageId,
-                operation,
-            });
+            // console.log("Image operation:", {
+            //     pageNumber,
+            //     imageId,
+            //     operation,
+            // });
 
             const image = await new Promise<ExtractedImage | null>((resolve) => (imageId.startsWith("g_") ? page.commonObjs : page.objs).get(imageId, resolve));
 
-            if(operatorList.fnArray[i-5] === pdfjsLib.OPS.paintFormXObjectBegin){
+            if (operatorList.fnArray[i - 5] === pdfjsLib.OPS.paintFormXObjectBegin) {
                 console.warn("Blur image")
                 continue;
             }
@@ -56,53 +56,58 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                 ),
             });
 
-            
-            const previousOperations = [74, 10, 9, 12, 1];
 
-        console.log(
-                previousOperations.map(op => ({
-                 op,
-                name: Object.entries(pdfjsLib.OPS).find(
-            ([, value]) => value === op
-             )?.[0],
-            }))
-);          
-        console.log("Previous operations:",{
-            index: i,
-            operation: operation,
-            previousOperations:   previousOperations.map(op => ({
-                 op,
-                name: Object.entries(pdfjsLib.OPS).find(
-            ([, value]) => value === op
-             )?.[0],
-            })),
-        previousArguments: operatorList.fnArray.slice(
-            Math.max(0, i - 5),
-            i
-        ),
-         previousArgs: operatorList.argsArray.slice(
-        Math.max(0, i - 5),
-        i
-    ),
-        });
-            console.log("BEFORE convertImage:", {
-                pageNumber,
-                imageId,
-                width: image.width,
-                height: image.height,
-                bitmap: image.bitmap,
-            });
+            // const previousOperations = [74, 10, 9, 12, 1];
 
-            const blob = await convertImage(image.bitmap, "png");
+            // console.log(
+            //     previousOperations.map(op => ({
+            //         op,
+            //         name: Object.entries(pdfjsLib.OPS).find(
+            //             ([, value]) => value === op
+            //         )?.[0],
+            //     }))
+            // );
+            //     console.log("Previous operations:",{
+            //         index: i,
+            //         operation: operation,
+            //         previousOperations:   previousOperations.map(op => ({
+            //              op,
+            //             name: Object.entries(pdfjsLib.OPS).find(
+            //         ([, value]) => value === op
+            //          )?.[0],
+            //         })),
+            //     previousArguments: operatorList.fnArray.slice(
+            //         Math.max(0, i - 5),
+            //         i
+            //     ),
+            //      previousArgs: operatorList.argsArray.slice(
+            //     Math.max(0, i - 5),
+            //     i
+            // ),
+            //     });
+            // console.log("BEFORE convertImage:", {
+            //     pageNumber,
+            //     imageId,
+            //     width: image.width,
+            //     height: image.height,
+            //     bitmap: image.bitmap,
+            // });
 
-            console.log("AFTER convertImage:", {
-                pageNumber,
-                imageId,
-                blob,
-                size: blob.size,
-                type: blob.type,
-            });
-            
+            const blob = await convertImage(image.bitmap, "png", imageId);
+
+            if(!blob){
+                console.warn("It failed to convert this image")
+                continue;
+            }
+
+            // console.log("AFTER convertImage:", {
+            //     pageNumber,
+            //     imageId,
+            //     blob,
+            //     size: blob.size,
+            //     type: blob.type,
+            // });
+
             extractedImages.push({
                 image: blob,
                 imageUrl: URL.createObjectURL(blob),
@@ -112,7 +117,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
                 pageNumber,
             });
 
-            
+
         }
     }
 
