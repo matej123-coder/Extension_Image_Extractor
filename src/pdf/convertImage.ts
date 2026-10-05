@@ -1,28 +1,48 @@
 import type { ImageFormat } from "../types/types";
+import hashPixels from "../utils/utils";
 
 export default function convertImage(
   bitmap: ImageBitmap | VideoFrame,
   format: ImageFormat,
   imageId: string,
+  hashes: Set<number>
 ): Promise<Blob | null> {
   try {
+    
     const canvas = document.createElement("canvas");
 
-    if (bitmap instanceof ImageBitmap) {
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
-    } else {
-      canvas.width = bitmap.codedWidth;
-      canvas.height = bitmap.codedHeight;
-    }
+    const width =
+    bitmap instanceof VideoFrame
+        ? bitmap.displayWidth
+        : bitmap.width;
+
+    const height =
+    bitmap instanceof VideoFrame
+        ? bitmap.displayHeight
+        : bitmap.height;
+    canvas.width = width;
+    canvas.height = height;
+    // if (bitmap instanceof ImageBitmap) {
+    //   canvas.width = bitmap.width;
+    //   canvas.height = bitmap.height;
+    // } else {
+    //   canvas.width = bitmap.codedWidth;
+    //   canvas.height = bitmap.codedHeight;
+    // }
 
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
       return Promise.resolve(null);
     }
+    ctx.drawImage(bitmap, 0, 0)
 
-    ctx.drawImage(bitmap, 0, 0);
+    const hash = hashPixels(ctx.getImageData(0,0,canvas.width,canvas.height).data);
+
+    if(hashes.has(hash)){
+        return Promise.resolve(null);
+    }
+    hashes.add(hash)
 
     const mimeType =
       format === "png"

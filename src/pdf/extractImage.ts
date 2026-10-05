@@ -3,9 +3,11 @@ import pdfjsLib from "./pdf";
 import type { ExtractedImage, Images } from "../types/types";
 import convertImage from "./convertImage";
 
-const CONCURECY_LIMIT = 4;
+const CONCURECY_LIMIT = 10;
+
 export default async function extractImages(pdf: PDFDocumentProxy) {
   const extractedImages: Images[] = [];
+  const hashes = new Set<number>();
 
   for (let start = 1; start <= pdf.numPages; start += CONCURECY_LIMIT) {
     const end = Math.min(start + CONCURECY_LIMIT - 1, pdf.numPages);
@@ -15,7 +17,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
       pageNumbers.push(pageNumber);
     }
     const pageImages = await Promise.all(
-      pageNumbers.map((pageNumber) => processPage(pageNumber, pdf)),
+      pageNumbers.map((pageNumber) => processPage(pageNumber, pdf, hashes)),
     );
     for (const pageNumber of pageImages) {
       extractedImages.push(...pageNumber);
@@ -27,6 +29,7 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
 async function processPage(
   pageNumber: number,
   pdf: PDFDocumentProxy,
+  hashes: Set<number>
 ): Promise<Images[]> {
   console.log("Processing page:", pageNumber);
   const page = await pdf.getPage(pageNumber);
@@ -47,13 +50,14 @@ async function processPage(
 
     const imageId = operatorList.argsArray[i][0];
 
+    
     const image = await new Promise<ExtractedImage | null>((resolve) =>
       (imageId.startsWith("g_") ? page.commonObjs : page.objs).get(
         imageId,
         resolve,
       ),
     );
-
+    
     if (!image || !image.bitmap || !image.width || !image.height) {
       console.warn("Image object is null:", {
         pageNumber,
@@ -62,10 +66,9 @@ async function processPage(
       continue;
     }
 
-    const blob = await convertImage(image.bitmap, "png", imageId);
+    const blob = await convertImage(image.bitmap, "png", imageId,hashes);
 
     if (!blob) {
-      console.warn("It failed to convert this image");
       continue;
     }
 
