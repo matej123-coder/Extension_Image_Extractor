@@ -22,13 +22,7 @@ export default function convertImage(
         : bitmap.height;
     canvas.width = width;
     canvas.height = height;
-    // if (bitmap instanceof ImageBitmap) {
-    //   canvas.width = bitmap.width;
-    //   canvas.height = bitmap.height;
-    // } else {
-    //   canvas.width = bitmap.codedWidth;
-    //   canvas.height = bitmap.codedHeight;
-    // }
+   
 
     const ctx = canvas.getContext("2d");
 
