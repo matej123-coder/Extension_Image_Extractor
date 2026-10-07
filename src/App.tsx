@@ -4,12 +4,13 @@ import extractImage from "./pdf/extractImage";
 import { type ImageFormat, type Images } from "./types/types";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import JSZip from "jszip";
+import convertImageForDownload from "./pdf/convertImageForDownload";
 
 const ALLOWED_FORMATS : ImageFormat[] = ['png', 'jpeg', 'webp'];
 function App() {
 //   const [file, setFile] = useState<File | null>(null);
 //   const [loading, setLoading] = useState<boolean>(false);
-  const [format,setFormat] = useState<ImageFormat>('png');
+
   const [images, setImages] = useState<Images[]>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
@@ -75,9 +76,29 @@ function App() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
-   function handleDownloadImage(index:number){
+ async function handleDownloadImage(index:number){
 
     const image = images[index];
+    let blob : Blob | null = image.image;
+    let extension = image.imageType;
+
+    if(image.imageType !== "png"){
+        const convertedBlob = await convertImageForDownload(
+      image.image,
+      `image_${index + 1}`,
+      image.imageType
+    );
+         if (!convertedBlob) {
+         alert("Failed to convert this image!")
+        }
+      
+        blob = convertedBlob;
+
+    }
+    if(!blob){
+         alert("Failed to convert this image!")
+    }
+    const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a")
     link.href = image.imageUrl;
