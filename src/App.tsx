@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { loadPdf } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
-import { type Images } from "./types/types";
+import { type ImageFormat, type Images } from "./types/types";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import JSZip from "jszip";
 
+const ALLOWED_FORMATS : ImageFormat[] = ['png', 'jpeg', 'webp'];
 function App() {
 //   const [file, setFile] = useState<File | null>(null);
 //   const [loading, setLoading] = useState<boolean>(false);
+  const [format,setFormat] = useState<ImageFormat>('png');
   const [images, setImages] = useState<Images[]>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
+
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] || null;
     if (!selectedFile) {
@@ -30,6 +33,7 @@ function App() {
       console.error("Failed to load PDF:", error);
     }
   }
+
   async function handleExtractionImages() {
     if (!pdf) {
       alert("Please select a PDF first.");
@@ -47,6 +51,7 @@ function App() {
       setLoadingPdf(false);
     }
   }
+
   async function handleDownloadAllImages() {
     if (images.length === 0) {
       alert("No images to download.");
@@ -81,6 +86,19 @@ function App() {
     link.click()
     document.body.removeChild(link);
 
+  }
+  function handleFormatValue( event: React.ChangeEvent<HTMLSelectElement>, index:number){
+        const selectedFormat = event.target.value as ImageFormat;
+        
+        const finalFormat = ALLOWED_FORMATS.includes(selectedFormat) ? selectedFormat : "png"
+
+        setImages((prevImages)=> prevImages.map((img,i)=>{
+            if(i === index){
+                return {... img, imageType:finalFormat}
+            }
+            return img
+        }))
+        
   }
   return (
     <>
@@ -175,6 +193,14 @@ function App() {
                     </svg>{" "}
                     Download Button
                   </button>
+
+                </div>
+                <div className="select-btn">
+                    <select name="selectFormat" id="selectFormat" value={image.imageType} onChange={(event)=>handleFormatValue(event,index)}>
+                        <option value="png" >PNG</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="webp">WEBP</option>
+                    </select>
                 </div>
               </div>
             ))}
