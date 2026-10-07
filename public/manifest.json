@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "React Chrome Extension",
+  "version": "1.0.0",
+  "description": "An app that extracts images from PDFs",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}

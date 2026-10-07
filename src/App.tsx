@@ -6,8 +6,8 @@ import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import JSZip from "jszip";
 
 function App() {
-  const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+//   const [file, setFile] = useState<File | null>(null);
+//   const [loading, setLoading] = useState<boolean>(false);
   const [images, setImages] = useState<Images[]>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
@@ -16,22 +16,18 @@ function App() {
     if (!selectedFile) {
       return;
     }
+    
     if (selectedFile.type !== "application/pdf") {
       alert("Please upload a valid PDF.");
       return;
     }
-
-    setFile(selectedFile);
-    setLoading(true);
-
+    
     try {
       const pdf = await loadPdf(selectedFile);
       console.log("Loaded PDF:", pdf);
       setPdf(pdf);
     } catch (error) {
       console.error("Failed to load PDF:", error);
-    } finally {
-      setLoading(false);
     }
   }
   async function handleExtractionImages() {
@@ -89,6 +85,11 @@ function App() {
   return (
     <>
       <div className="pdf-container">
+        { loadingPdf &&  <div id="loaderSpinner" className="">
+            <div className="loading-spinner"></div>
+            <div className="loading-text">Loading PDF...</div>
+        </div>}
+         
         <h1>PDF Image Extractor</h1>
         <h2>
           Save every photo and graphic embedded in a PDF as a separate image

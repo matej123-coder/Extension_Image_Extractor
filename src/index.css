@@ -198,3 +198,41 @@ html,body{
     display: flex;
     justify-content: space-between;
 }
+#loaderSpinner{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.loading-spinner{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    animation: spin 1s linear infinite;
+}
+.loading-text{
+    margin-top: 15px;
+    font-size: large;
+    font-weight: 600;
+    color: #334155;
+}
+@keyframes spin{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+.hidden{
+    display: none;
+}

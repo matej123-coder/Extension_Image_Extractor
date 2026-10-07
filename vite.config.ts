@@ -11,6 +11,10 @@ export default defineConfig({
                     src: "node_modules/pdfjs-dist/wasm/*",
                     dest: "pdfjs/wasm",
                 },
+                {
+                    src:"public/manifest.json",
+                    dest:"."
+                }
             ],
         }),
   ],
