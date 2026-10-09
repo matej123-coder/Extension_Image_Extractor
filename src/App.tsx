@@ -61,7 +61,7 @@ function App() {
     const zip = new JSZip();
 
     images.forEach((image, index) => {
-      zip.file(`image_${index + 1}.${image.imageType}`, image.image);
+      zip.file(`${index + 1}.${image.imageType}`, image.image);
     });
 
     const zipBlob = await zip.generateAsync({ type: "blob" });

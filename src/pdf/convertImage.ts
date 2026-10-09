@@ -5,25 +5,24 @@ export default function convertImage(
   bitmap: ImageBitmap | VideoFrame,
   format: ImageFormat,
   imageId: string,
-  hashes: Set<number>
+  hashes: Set<number>,
+  //hashes16Pixels: Set<number>
 ): Promise<Blob | null> {
   try {
     
     const canvas = document.createElement("canvas");
 
-    const width =
+    canvas.width =
     bitmap instanceof VideoFrame
         ? bitmap.displayWidth
         : bitmap.width;
 
-    const height =
+    canvas.height =
     bitmap instanceof VideoFrame
         ? bitmap.displayHeight
         : bitmap.height;
-    canvas.width = width;
-    canvas.height = height;
+    
    
-
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
@@ -31,8 +30,18 @@ export default function convertImage(
     }
     ctx.drawImage(bitmap, 0, 0)
 
-    const hash = hashPixels(ctx.getImageData(0,0,canvas.width,canvas.height).data);
+    
+    // const hash16Pixels = hashPixels(ctx.getImageData(0,0,4,4).data);
 
+    // if(hashes16Pixels.has(hash16Pixels)){
+    //     return Promise.resolve(null);
+    // }
+    // hashes16Pixels.add(hash16Pixels);
+
+    
+
+    const hash = hashPixels(ctx.getImageData(0,0,canvas.width,canvas.height).data);
+    
     if(hashes.has(hash)){
         return Promise.resolve(null);
     }
@@ -44,6 +53,8 @@ export default function convertImage(
         : format === "webp"
           ? "image/webp"
           : "image/jpeg";
+
+
 
     return new Promise((resolve) => {
       canvas.toBlob((blob) => {

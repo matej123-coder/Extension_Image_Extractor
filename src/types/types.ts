@@ -13,3 +13,8 @@ export interface Images{
     pageNumber: number;
 }
 export type ImageFormat = 'png' | 'jpg' | 'webp' | 'jpeg';
+
+export interface ImageDimensions{
+    width: number;
+    height: number;
+}

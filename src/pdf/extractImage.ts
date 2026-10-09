@@ -3,12 +3,12 @@ import pdfjsLib from "./pdf";
 import type { ExtractedImage, Images } from "../types/types";
 import convertImage from "./convertImage";
 
-const CONCURECY_LIMIT = 10;
+const CONCURECY_LIMIT = 4;
 
 export default async function extractImages(pdf: PDFDocumentProxy) {
   const extractedImages: Images[] = [];
   const hashes = new Set<number>();
-
+//   const hashes16Pixels = new Set<number>();
   for (let start = 1; start <= pdf.numPages; start += CONCURECY_LIMIT) {
     const end = Math.min(start + CONCURECY_LIMIT - 1, pdf.numPages);
 
@@ -29,7 +29,8 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
 async function processPage(
   pageNumber: number,
   pdf: PDFDocumentProxy,
-  hashes: Set<number>
+  hashes: Set<number>,
+//   hashes16Pixels: Set<number>
 ): Promise<Images[]> {
   console.log("Processing page:", pageNumber);
   const page = await pdf.getPage(pageNumber);
