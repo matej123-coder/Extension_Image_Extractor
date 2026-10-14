@@ -7,7 +7,7 @@ html,body{
     font-family: system-ui, arial, sans-serif;
     letter-spacing: 0.02rem;
     color: white;
-    background-color: #232323;
+    background-color: #200533;
 }
 .pdf-container{
     display: flex;
@@ -111,18 +111,19 @@ html,body{
 
 }
 .extract-btn button{
-    padding: 1rem 5rem 1rem 5rem ;
+    padding: 1rem 2.5rem 1rem 2.5rem ;
     color: white;
-    background-color: orange;
+    background-color: #773179;
     outline: none;
     border: none;
-    font-size: 2rem;
+    font-size: 1.1rem;
     border-radius: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
+    font-weight: 700;
 }
 .extract-btn button:hover {
-    background-color: #B86A0B;
+    background-color: #5F255F;
 }
 .image-section{
    width: 100%;
@@ -170,20 +171,21 @@ html,body{
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    padding: 1rem 5rem ;
+    padding: 1rem 2.5rem 1rem 2.5rem ;
     color: white;
-    background-color: #7454AE;
+    background-color: #773179;
     outline: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     border-radius: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
     width: 100%;
     font-weight: 700;
+    
 }
 .download-btn button:hover, .download-btn-all button:hover{
-    background-color: #4a3a69;
+    background-color: #5F255F;
 }
 .download-btn svg, .download-btn-all svg {
     width: 30px !important;

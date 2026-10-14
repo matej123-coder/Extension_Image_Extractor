@@ -219,7 +219,7 @@ function App() {
                           stroke-linejoin="round"
                         />
                       </svg>{" "}
-                      Download Button
+                      Download Image
                     </button>
                   </div>
                   <div className="select-btn">
