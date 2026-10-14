@@ -116,7 +116,7 @@ html,body{
     background-color: #773179;
     outline: none;
     border: none;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     border-radius: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -127,7 +127,6 @@ html,body{
 }
 .image-section{
    width: 100%;
-  
 }
 .image-container{
     display: grid;
@@ -176,7 +175,7 @@ html,body{
     background-color: #773179;
     outline: none;
     border: none;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     border-radius: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -188,8 +187,8 @@ html,body{
     background-color: #5F255F;
 }
 .download-btn svg, .download-btn-all svg {
-    width: 30px !important;
-    height: 30px !important;
+    width: 22px !important;
+    height: 22px !important;
     fill: none;
 
 }
