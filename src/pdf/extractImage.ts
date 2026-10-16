@@ -2,6 +2,7 @@ import type { PDFDocumentProxy } from "pdfjs-dist";
 import pdfjsLib from "./pdf";
 import type { ExtractedImage, Images } from "../types/types";
 import convertImage from "./convertImage";
+import getImageCoordinates from "./getImageCoordinates";
 
 const CONCURECY_LIMIT = 2;
 
@@ -35,17 +36,23 @@ async function processPage(
 ): Promise<Images[]> {
   console.log("Processing page:", pageNumber);
   const page = await pdf.getPage(pageNumber);
+
+ const{rects} =  await getImageCoordinates(page)
+
+  
   const operatorList = await page.getOperatorList();
 
   const pageImages: Images[] = [];
 
+  let paintIndex = -1;
   for (let i = 0; i < operatorList.fnArray.length; i++) {
     const operation = operatorList.fnArray[i];
 
     if (operation !== pdfjsLib.OPS.paintImageXObject) {
       continue;
     }
-
+    paintIndex++;
+    const position = rects[paintIndex] ?? null
     if (operatorList.fnArray[i - 5] === pdfjsLib.OPS.paintFormXObjectBegin) {
       continue;
     }
@@ -67,12 +74,13 @@ async function processPage(
       });
       continue;
     }
-
+    
     const blob = await convertImage(image.bitmap, "png", imageId,hashes,candidate);
-
+    
     if (!blob) {
       continue;
     }
+    console.log(image)
 
     pageImages.push({
       image: blob,
@@ -81,7 +89,9 @@ async function processPage(
       width: image.width,
       height: image.height,
       pageNumber,
+      position
     });
   }
+  console.log(pageImages)
   return pageImages;
 }

@@ -1,31 +1,34 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { loadPdf } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
 import { type ImageFormat, type Images } from "./types/types";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import JSZip from "jszip";
 import convertImageForDownload from "./pdf/convertImageForDownload";
+import PagePreview from "./component/PagePreview";
 
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
     //   const [loading, setLoading] = useState<boolean>(false);
-    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    // const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [images, setImages] = useState<Images[]>([]);
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
     const [loadingPdf, setLoadingPdf] = useState(false);
 
-    useEffect(() => {
-        chrome.tabs.query({ active: true, currentWindow: true }, 
-            (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
-    }, [pdfUrl])
+//     useEffect(() => {
+//         chrome.tabs.query({ active: true, currentWindow: true }, 
+//             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
+//     }, [pdfUrl])
 
-    useEffect(() => {
-    if (!pdfUrl) return;
+//     useEffect(() => {
+//     if (!pdfUrl) return;
 
-    console.log("Active tab URL:", pdfUrl);
+//     console.log("Active tab URL:", pdfUrl);
 
-    // Load the PDF here if the URL points to a PDF.
-}, [pdfUrl]);
+//     // Load the PDF here if the URL points to a PDF.
+// }, [pdfUrl]);
+
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.target.files?.[0] || null;
         if (!selectedFile) {
@@ -229,6 +232,7 @@ function App() {
                                                     <button
                                                         className="preview-btn"
                                                         onClick={() => {
+                                                            setPreviewIndex(index)
                                                             // Preview functionality will be implemented later
                                                         }}
                                                     >
@@ -285,6 +289,14 @@ function App() {
                     </div>
                 )}
             </div>
+            {pdf && previewIndex !== null && (
+  <PagePreview
+    pdf={pdf}
+    images={images}
+    selectedIndex={previewIndex}
+    onClose={() => setPreviewIndex(null)}
+  />
+)}
         </>
     );
 }

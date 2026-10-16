@@ -36,7 +36,7 @@ export default function convertImage(
                 : format === "webp"
                     ? "image/webp"
                     : "image/jpeg";
-
+        
         const hash16Pixels = hashPixels(ctx.getImageData(Math.max(0, (canvas.width >> 1) - 2),
             Math.max(0, (canvas.height >> 1) - 2),
             Math.min(4, canvas.width),
