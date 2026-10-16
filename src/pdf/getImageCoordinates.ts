@@ -1,8 +1,8 @@
 import type { PDFPageProxy, PageViewport } from "pdfjs-dist";
 
 export interface ImageRect {
-  x: number;      // left, in PDF points, origin top-left (assuming top-down Y, see the test below)
-  y: number;      // top
+  x: number;   
+  y: number;     
   width: number;
   height: number;
 }
@@ -11,7 +11,7 @@ const RENDER_SCALE = 1.5;
 
 export function parseImageCoordinates(
   coords: ArrayLike<number>,
-  pageWidth: number,   // page width in points (scale 1)
+  pageWidth: number,   
   pageHeight: number,
 ): ImageRect[] {
   const rects: ImageRect[] = [];
@@ -57,6 +57,5 @@ export default async function getImageCoordinates(page: PDFPageProxy) {
       )
     : [];
 
-  // canvas + viewport are returned so you can debug-draw (see testing section)
-  return { rects, canvas, viewport };
+  return { rects};
 }

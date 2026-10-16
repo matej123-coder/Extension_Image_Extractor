@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { loadPdf } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
 import { type ImageFormat, type Images } from "./types/types";
@@ -16,18 +16,18 @@ function App() {
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
     const [loadingPdf, setLoadingPdf] = useState(false);
 
-//     useEffect(() => {
-//         chrome.tabs.query({ active: true, currentWindow: true }, 
-//             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
-//     }, [pdfUrl])
+    //     useEffect(() => {
+    //         chrome.tabs.query({ active: true, currentWindow: true }, 
+    //             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
+    //     }, [pdfUrl])
 
-//     useEffect(() => {
-//     if (!pdfUrl) return;
+    //     useEffect(() => {
+    //     if (!pdfUrl) return;
 
-//     console.log("Active tab URL:", pdfUrl);
+    //     console.log("Active tab URL:", pdfUrl);
 
-//     // Load the PDF here if the URL points to a PDF.
-// }, [pdfUrl]);
+    //     // Load the PDF here if the URL points to a PDF.
+    // }, [pdfUrl]);
 
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.target.files?.[0] || null;
@@ -290,13 +290,13 @@ function App() {
                 )}
             </div>
             {pdf && previewIndex !== null && (
-  <PagePreview
-    pdf={pdf}
-    images={images}
-    selectedIndex={previewIndex}
-    onClose={() => setPreviewIndex(null)}
-  />
-)}
+                <PagePreview
+                    pdf={pdf}
+                    images={images}
+                    selectedIndex={previewIndex}
+                    onClose={() => setPreviewIndex(null)}
+                />
+            )}
         </>
     );
 }
