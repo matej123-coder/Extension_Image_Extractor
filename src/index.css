@@ -1,34 +1,40 @@
-*{
- box-sizing: border-box;
- margin: 0;
- padding: 0;   
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-html,body{
+
+html,
+body {
     font-family: system-ui, arial, sans-serif;
     letter-spacing: 0.02rem;
     color: white;
     background-color: #200533;
+    width: 604px;
 }
-.pdf-container{
+
+.pdf-container {
     display: flex;
     margin: 0 auto;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-top: 5.2rem;
-    padding-left: 15.5rem;
-    padding-right: 15.5rem;
+    padding-top: max(5.2rem, 4vw);
+    padding-left: max(2rem, 10vw);
+    padding-right: max(2rem, 10vw);
 }
-.pdf-container h1{ 
-    font-size:  2.5rem;
+
+.pdf-container h1 {
+    font-size: 1.5rem;
     font-weight: 700;
-    
 }
-.pdf-container h2{
-    font-size: 1.05rem;
+
+.pdf-container h2 {
+    font-size: 1rem;
     margin-top: 2.4rem;
     font-weight: 600;
 }
+
 .input-field {
     padding-top: 2.5rem;
     width: 100%;
@@ -105,101 +111,190 @@ html,body{
     font-size: 0.9rem;
     color: #64748b;
 }
-.extract-btn{
+
+.extract-btn {
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
 
 }
-.extract-btn button{
-    padding: 1rem 2.5rem 1rem 2.5rem ;
+
+.extract-btn button {
+    padding: 1rem 1.5rem 1rem 1.5rem;
     color: white;
     background-color: #773179;
     outline: none;
     border: none;
-    font-size: 1.3rem;
+    font-size: 0.8rem;
     border-radius: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
     font-weight: 700;
 }
+
 .extract-btn button:hover {
     background-color: #5F255F;
 }
-.image-section{
-   width: 100%;
-}
-.image-container{
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(min(300px,100%),1fr));
-    gap: 2rem;
-}
-.image-element {
-    border: 2px solid white;
-}
-.image-element img{
-    object-fit: cover;
-    width: 100%;
-    height: auto;
-}
-.image-element .info-box{
-    padding: 1.5rem;
-    
-}
-.info-box .info-list{
-    list-style-type: none;
-    font-size: 17.5px;
-    font-weight: 700;
-}
-.info-box .info-list li{
-    margin-top: 5px;
-}
-.download-btn{
-    padding: 0 1.5rem 1.5rem 1.5rem;
-    display: flex;
-    align-items: center;
 
-    
+.image-section {
+    width: 100%;
 }
-.download-btn-all{
-    padding: 0 0 1.5rem 1.5rem;
+
+.image-table-container {
+    width: 100%;
+    max-height: clamp(500px, 65vh, 600px);
+    overflow: auto;
+    border: 1px solid #39343e;
+    border-radius: 12px;
+    background-color: #201d24;
+}
+
+/* Table */
+.image-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #f5f3f7;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+/* Headers */
+.image-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.image-table th {
+    padding: clamp(1rem, 1.2vw, 1.25rem) ;
+    background-color: #302a35;
+    color: #d8c4df;
+    font-weight: 700;
+    white-space: nowrap;
+    border-bottom: 1px solid #4a414e;
+}
+
+.image-table td {
+    padding: clamp(0.75rem, 1.5vw, 1.25rem);;
+    border-bottom: 1px solid #39343e;
+    white-space: nowrap;
+}
+
+.image-table tbody tr {
+    background-color: #201d24;
+    transition: background-color 0.2s ease;
+}
+
+.image-table tbody tr:nth-child(even) {
+    background-color: #28232d;
+}
+
+.image-table tbody tr:hover {
+    background-color: #342b3b;
+}
+
+.image-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.image-preview-cell {
+    width: 110px;
+}
+
+.image-preview-cell img {
+    display: block;
+    width: 90px;
+    height: 65px;
+    object-fit: contain;
+    background-color: #17151a;
+    border: 1px solid #45404b;
+    border-radius: 6px;
+}
+
+.image-actions {
     display: flex;
     align-items: center;
+     gap: clamp(0.4rem, 0.8vw, 0.75rem);
 }
-.download-btn button,.download-btn-all button{
+
+.download-actions {
     display: flex;
+    align-items: center;
+     gap: clamp(0.4rem, 0.8vw, 0.75rem);
+}
+
+
+.preview-btn,
+.download-btn {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    padding: 1rem 2.5rem 1rem 2.5rem ;
+    gap: 0.5rem;
+    padding: clamp(0.5rem, 0.8vw, 0.65rem)
+             clamp(0.7rem, 1vw, 1rem);
     color: white;
     background-color: #773179;
-    outline: none;
-    border: none;
-    font-size: 1.3rem;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 0.85rem;
     font-weight: 700;
-    
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
-.download-btn button:hover, .download-btn-all button:hover{
-    background-color: #5F255F;
+
+.preview-btn:hover,
+.download-btn:hover {
+    background-color: #914394;
 }
-.download-btn svg, .download-btn-all svg {
+
+.preview-btn {
+    background-color: #39313f;
+    border-color: #574a60;
+}
+
+.preview-btn:hover {
+    background-color: #4a3b52;
+}
+
+
+.download-actions select {
+    padding: 0.65rem 0.5rem;
+    color: #f5f3f7;
+    background-color: #302a35;
+    border: 1px solid #514757;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.download-actions select:focus {
+    border-color: #a35ba6;
+}
+
+.download-actions select option {
+    background-color: #302a35;
+    color: white;
+}
+
+.download-btn svg,
+.download-btn-all svg {
     width: 22px !important;
     height: 22px !important;
     fill: none;
 
 }
-.download-img svg{
+
+.download-img svg {
     stroke: white;
 }
-.header{
+
+.header {
     display: flex;
     justify-content: space-between;
 }
-#loaderSpinner{
+
+#loaderSpinner {
     position: fixed;
     top: 0;
     left: 0;
@@ -212,7 +307,8 @@ html,body{
     align-items: center;
     flex-direction: column;
 }
-.loading-spinner{
+
+.loading-spinner {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -220,20 +316,24 @@ html,body{
     border-top: 6px solid #3498db;
     animation: spin 1s linear infinite;
 }
-.loading-text{
+
+.loading-text {
     margin-top: 15px;
     font-size: large;
     font-weight: 600;
     color: #334155;
 }
-@keyframes spin{
-    0%{
+
+@keyframes spin {
+    0% {
         transform: rotate(0deg);
     }
-    100%{
+
+    100% {
         transform: rotate(360deg);
     }
 }
-.hidden{
+
+.hidden {
     display: none;
 }
