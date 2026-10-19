@@ -17,6 +17,7 @@ function App() {
     const [loadingPdf, setLoadingPdf] = useState(false);
 
     const positionRef = useRef(new Map<string, ImageRect | null >());
+    
     //     useEffect(() => {
     //         chrome.tabs.query({ active: true, currentWindow: true }, 
     //             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });

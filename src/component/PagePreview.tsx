@@ -3,7 +3,6 @@ import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import type { ImageRect, Images } from "../types/types";
 import getImageCoordinates from "../pdf/getImageCoordinates";
 
-const SCALE = 1.5;
 
 interface Props {
     pdf: PDFDocumentProxy;
@@ -51,10 +50,23 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose,positi
             const page = await pdf.getPage(selected.pageNumber);
 
             const imagePosition = await assignAndGetTheImagePosition(page)
-
+            
             if (cancelled) return;
 
-            const viewport = page.getViewport({ scale: SCALE });
+            const MAX_WIDTH = 600;
+            const MAX_HEIGHT = 800;
+
+            const initialViewport = page.getViewport({ scale: 1 });
+
+            
+            const scale = Math.min(
+             MAX_WIDTH / initialViewport.width,
+             MAX_HEIGHT / initialViewport.height,
+                1,
+            );
+
+            const viewport = page.getViewport({ scale });
+
             canvas.width = Math.ceil(viewport.width);
             canvas.height = Math.ceil(viewport.height);
 
@@ -73,8 +85,8 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose,positi
             ctx.font = "20px sans-serif";
             ctx.strokeStyle = ctx.fillStyle = "red";
 
-            ctx.strokeRect(r.x * SCALE, r.y * SCALE, r.width * SCALE, r.height * SCALE);
-            ctx.fillText(String(selectedIndex + 1), r.x * SCALE + 4, r.y * SCALE + 20);
+            ctx.strokeRect(r.x * scale, r.y * scale, r.width * scale, r.height * scale);
+            ctx.fillText(String(selectedIndex + 1), r.x * scale + 4, r.y * scale + 20);
             
         })();
 
