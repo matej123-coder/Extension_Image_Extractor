@@ -1,5 +1,9 @@
-import type { ImageRect } from "../pdf/getImageCoordinates";
-
+export interface ImageRect {
+  x: number;   
+  y: number;     
+  width: number;
+  height: number;
+}
 export interface ExtractedImage{
    
     bitmap: ImageBitmap;
@@ -13,7 +17,7 @@ export interface Images{
     width:number;
     height: number;
     pageNumber: number;
-    position?:ImageRect;
+    paintIndex: number;
 }
 export type ImageFormat = 'png' | 'jpg' | 'webp' | 'jpeg';
 

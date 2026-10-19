@@ -1,11 +1,5 @@
 import type { PDFPageProxy, PageViewport } from "pdfjs-dist";
-
-export interface ImageRect {
-  x: number;   
-  y: number;     
-  width: number;
-  height: number;
-}
+import type { ImageRect } from "./parseImageCoordinates";
 
 const RENDER_SCALE = 1.5;
 
@@ -33,6 +27,7 @@ export function parseImageCoordinates(
       width: (maxX - minX) * pageWidth,
       height: (maxY - minY) * pageHeight,
     });
+    
   }
   return rects;
 }
@@ -44,7 +39,7 @@ export default async function getImageCoordinates(page: PDFPageProxy) {
   canvas.width = Math.ceil(viewport.width);
   canvas.height = Math.ceil(viewport.height);
 
-  await page.render({ canvas, viewport, recordImages: true }).promise;
+ await page.render({ canvas, viewport, recordImages: true }).promise;
 
   const raw = (page as PDFPageProxy & { imageCoordinates?: ArrayLike<number> })
     .imageCoordinates;

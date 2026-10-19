@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
-import type { PDFDocumentProxy } from "pdfjs-dist";
-import type { Images } from "../types/types";
-
+import { useCallback, useEffect, useRef } from "react";
+import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
+import type { ImageRect, Images } from "../types/types";
+import getImageCoordinates from "../pdf/getImageCoordinates";
 
 const SCALE = 1.5;
 
@@ -10,11 +10,33 @@ interface Props {
     images: Images[];
     selectedIndex: number;
     onClose: () => void;
+    positionRef: React.RefObject<Map<string,ImageRect | null>>;
 }
 
-export default function PagePreview({ pdf, images, selectedIndex, onClose }: Props) {
+export default function PagePreview({ pdf, images, selectedIndex, onClose,positionRef }: Props) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const selected = images[selectedIndex];
+
+    const assignAndGetTheImagePosition =  useCallback(async (page:PDFPageProxy)=>{
+         const key = `${selectedIndex}-${selected.pageNumber}`;
+
+        const positionCache = positionRef.current.get(key);
+
+        if (positionCache) {
+            return positionCache;
+        }
+
+        const { rects } = await getImageCoordinates(page);
+
+        const position = rects[selected.paintIndex] ?? null;
+
+        if (position) {
+            positionRef.current.set(key, position);
+        }
+
+        return position;
+    
+    },[selected.pageNumber,selected.paintIndex,selectedIndex,positionRef])
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -27,6 +49,9 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose }: Pro
 
         (async () => {
             const page = await pdf.getPage(selected.pageNumber);
+
+            const imagePosition = await assignAndGetTheImagePosition(page)
+
             if (cancelled) return;
 
             const viewport = page.getViewport({ scale: SCALE });
@@ -40,7 +65,7 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose }: Pro
                 return; 
             }
             if (cancelled) return;
-            const r = selected.position;
+            const r = imagePosition;
             if(!r) return;
 
             const ctx = canvas.getContext("2d")!;
@@ -51,26 +76,13 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose }: Pro
             ctx.strokeRect(r.x * SCALE, r.y * SCALE, r.width * SCALE, r.height * SCALE);
             ctx.fillText(String(selectedIndex + 1), r.x * SCALE + 4, r.y * SCALE + 20);
             
-            // images.forEach((img, i) => {
-            //     if (img.pageNumber !== selected.pageNumber || !img.position) return;
-            //     const r = img.position;
-            //     const isSelected = i === selectedIndex;
-            //     console.log(isSelected)
-            //     if( isSelected){
-            //     ctx.strokeStyle = ctx.fillStyle = isSelected ? "red" : "";
-            //     ctx.strokeRect(r.x * SCALE, r.y * SCALE, r.width * SCALE, r.height * SCALE);
-            //     ctx.fillText(String(i + 1), r.x * SCALE + 4, r.y * SCALE + 20);
-            //      return;
-            //     }
-                
-            // });
         })();
 
         return () => {
             cancelled = true;
             renderTask?.cancel();
         };
-    }, [pdf, selected, selectedIndex]);
+    }, [pdf, selected, selectedIndex, assignAndGetTheImagePosition]);
 
     return (
         <div
@@ -81,11 +93,8 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose }: Pro
                 padding: 24, zIndex: 1000,
             }}
         >
-            <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", padding: 12 }}>
-                <div style={{ marginBottom: 8, display: "flex", justifyContent: "space-between" }}>
-                    <span>
-                        Page {selected.pageNumber}, image {selectedIndex + 1} (red = selected, blue = others)
-                    </span>
+            <div onClick={(e) => e.stopPropagation()} style={{  }}>
+                <div style={{ marginBottom: 8, display: "flex", justifyContent: "flex-end" }}>
                     <button onClick={onClose}>Close</button>
                 </div>
                 <canvas ref={canvasRef} />

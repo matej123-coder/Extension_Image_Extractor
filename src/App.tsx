@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { loadPdf } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
-import { type ImageFormat, type Images } from "./types/types";
+import { type ImageFormat, type ImageRect, type Images } from "./types/types";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import JSZip from "jszip";
 import convertImageForDownload from "./pdf/convertImageForDownload";
@@ -16,6 +16,7 @@ function App() {
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
     const [loadingPdf, setLoadingPdf] = useState(false);
 
+    const positionRef = useRef(new Map<string, ImageRect | null >());
     //     useEffect(() => {
     //         chrome.tabs.query({ active: true, currentWindow: true }, 
     //             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
@@ -140,6 +141,7 @@ function App() {
             }),
         );
     }
+    
     return (
         <>
             <div className="pdf-container">
@@ -206,6 +208,7 @@ function App() {
                             <table className="image-table">
                                 <thead>
                                     <tr>
+                                        <th>Index</th>
                                         <th>Preview</th>
                                         <th>Width</th>
                                         <th>Height</th>
@@ -218,6 +221,7 @@ function App() {
                                 <tbody>
                                     {images.map((image, index) => (
                                         <tr key={index}>
+                                            <td>{index + 1}</td>
                                             <td className="image-preview-cell">
                                                 <img src={image.imageUrl} alt={`Extracted image ${index + 1}`} />
                                             </td>
@@ -233,7 +237,6 @@ function App() {
                                                         className="preview-btn"
                                                         onClick={() => {
                                                             setPreviewIndex(index)
-                                                            // Preview functionality will be implemented later
                                                         }}
                                                     >
                                                         Preview
@@ -295,6 +298,7 @@ function App() {
                     images={images}
                     selectedIndex={previewIndex}
                     onClose={() => setPreviewIndex(null)}
+                    positionRef = {positionRef}
                 />
             )}
         </>
