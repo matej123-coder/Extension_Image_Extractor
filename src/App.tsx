@@ -73,13 +73,16 @@ function App() {
     }
 
     async function handleDownloadAllImages() {
-        setLoadingDownload(true)
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-            if (images.length === 0) {
+         
+        if (images.length === 0) {
                 alert("No images to download.");
                 return;
             }
+        
+        setLoadingDownload(true)
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+           
             const zip = new JSZip();
 
             await Promise.all(images.map(async (image, index) => {
@@ -175,28 +178,71 @@ function App() {
                 return img;
             }),
         );
+        setSelectedImages((prevImages)=>
+            prevImages.map((img,i)=>{
+                  if (i === index) {
+                    return { ...img, imageType: finalFormat };
+                }
+                return img;  
+            }
+            )
+        )
     }
     async function handleDownloadSelectedImages() {
         if (selectedImages.length === 0) {
-            alert("Please select at least one image")
+                alert("No images to download.");
+                return;
+            }
+        
+        setLoadingDownload(true)
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            
+            const zip = new JSZip();
+
+            await Promise.all(selectedImages.map(async (image, index) => {
+                if (image.imageType === "png") {
+                    zip.file(`image_${index + 1}.png`, image.image)
+                    return {
+                        name: `image_${index + 1}.png`,
+                        blob: image.image
+                    }
+                }
+                const convertedBlob = await convertImageForDownload(image.image,
+                    `image_${index + 1}`,
+                    image.imageType,
+                )
+                if (!convertedBlob) {
+                    alert("Failed to convert this image!");
+                    return;
+                }
+                zip.file(`image_${index + 1}.${image.imageType}`, convertedBlob)
+                return {
+                    name: `image_${index + 1}.${image.imageType}`,
+                    blob: convertedBlob,
+                }
+
+            }))
+
+
+            const zipBlob = await zip.generateAsync({ type: "blob" });
+
+            const url = URL.createObjectURL(zipBlob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "images.zip";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+
+        } catch (error) {
+            console.error("Failed to download images: ", error);
+        } finally {
+            setLoadingDownload(false)
         }
-        const zip = new JSZip();
-
-        selectedImages.forEach((image, index) => {
-            zip.file(`${index + 1}.${image.imageType}`, image.image);
-        });
-
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-
-        const url = URL.createObjectURL(zipBlob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "images.zip";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
     }
     return (
         <>
