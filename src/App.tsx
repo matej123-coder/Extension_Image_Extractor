@@ -17,7 +17,7 @@ function App() {
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
     const [loadingPdf, setLoadingPdf] = useState(false);
     const [selectedImages, setSelectedImages] = useState<Images[]>([]);
-
+    const [loadingDownload, setLoadingDownload] = useState(false);
     const positionRef = useRef(new Map<string, ImageRect | null>());
 
     //     useEffect(() => {
@@ -73,47 +73,58 @@ function App() {
     }
 
     async function handleDownloadAllImages() {
-        if (images.length === 0) {
-            alert("No images to download.");
-            return;
-        }
-        const zip = new JSZip();
-         await Promise.all(images.map(async (image, index) => {
-            if (image.imageType === "png") {
-                zip.file( `image_${index + 1}.png`,image.image)
-                return {
-                    name: `image_${index + 1}.png`,
-                    blob: image.image
-                }
-            }
-            const convertedBlob = await convertImageForDownload(image.image,
-                `image_${index + 1}`,
-                image.imageType,
-            )
-            if (!convertedBlob) {
-                alert("Failed to convert this image!");
+        setLoadingDownload(true)
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            if (images.length === 0) {
+                alert("No images to download.");
                 return;
             }
-            zip.file( `image_${index + 1}.${image.imageType}`,convertedBlob)
-            return {
-                name: `image_${index + 1}.${image.imageType}`,
-                blob: convertedBlob,
-            }
+            const zip = new JSZip();
 
-        }))
+            await Promise.all(images.map(async (image, index) => {
+                if (image.imageType === "png") {
+                    zip.file(`image_${index + 1}.png`, image.image)
+                    return {
+                        name: `image_${index + 1}.png`,
+                        blob: image.image
+                    }
+                }
+                const convertedBlob = await convertImageForDownload(image.image,
+                    `image_${index + 1}`,
+                    image.imageType,
+                )
+                if (!convertedBlob) {
+                    alert("Failed to convert this image!");
+                    return;
+                }
+                zip.file(`image_${index + 1}.${image.imageType}`, convertedBlob)
+                return {
+                    name: `image_${index + 1}.${image.imageType}`,
+                    blob: convertedBlob,
+                }
+
+            }))
 
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
+            const zipBlob = await zip.generateAsync({ type: "blob" });
 
-        const url = URL.createObjectURL(zipBlob);
+            const url = URL.createObjectURL(zipBlob);
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "images.zip";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "images.zip";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+
+        } catch (error) {
+            console.error("Failed to download images: ", error);
+        } finally {
+            setLoadingDownload(false)
+        }
     }
 
     async function handleDownloadImage(index: number) {
@@ -196,7 +207,12 @@ function App() {
                         <div className="loading-text">Loading PDF...</div>
                     </div>
                 )}
-
+                {loadingDownload && (
+                    <div id="loaderSpinner" className="">
+                        <div className="loading-spinner"></div>
+                        <div className="loading-text">Downloading Images...</div>
+                    </div>
+                )}
                 <h1>PDF Image Extractor</h1>
                 <h2>
                     Save every photo and graphic embedded in a PDF as a separate image
