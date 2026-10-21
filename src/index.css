@@ -10,7 +10,7 @@ body {
     letter-spacing: 0.02rem;
     color: white;
     background-color: #200533;
-    width: 604px;
+    
 }
 
 .pdf-container {
@@ -292,6 +292,7 @@ body {
 .header {
     display: flex;
     justify-content: space-between;
+    padding-block: 15px;
 }
 
 #loaderSpinner {
@@ -336,4 +337,73 @@ body {
 
 .hidden {
     display: none;
+}
+.download-btn-all {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.selected-images{
+    background-color: #39313f !important ;
+    border-color: #574a60;
+}
+.selected-images:hover{
+    background-color: #4a3b52 !important;
+}
+.download-btn:disabled {
+    background-color: #39313f !important;
+    border-color: #574a60;
+    color: #a9a0af;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+.download-btn:disabled svg {
+    opacity: 0.6;
+}
+.select-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 20px;
+    height: 20px;
+    margin: 4px;
+    padding: 2px;
+
+    border: 2px solid #a79baa;
+    border-radius: 50%;
+    background-color: transparent;
+
+    cursor: pointer;
+    display: inline-grid;
+    place-content: center;
+
+    transition: all 0.2s ease;
+}
+
+.select-checkbox::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: white;
+    transform: scale(0);
+    transition: transform 0.15s ease;
+}
+
+.select-checkbox:checked {
+    background-color: #773179;
+    border-color: #773179;
+}
+
+.select-checkbox:checked::before {
+    transform: scale(1);
+}
+
+.select-checkbox:hover {
+    border-color: #773179;
+}
+
+.select-checkbox:focus-visible {
+    outline: 2px solid #773179;
+    outline-offset: 3px;
 }
