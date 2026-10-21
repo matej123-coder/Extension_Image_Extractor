@@ -7,6 +7,7 @@ import JSZip from "jszip";
 import convertImageForDownload from "./pdf/convertImageForDownload";
 import PagePreview from "./component/PagePreview";
 
+
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
     //   const [loading, setLoading] = useState<boolean>(false);
@@ -15,9 +16,10 @@ function App() {
     const [images, setImages] = useState<Images[]>([]);
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
     const [loadingPdf, setLoadingPdf] = useState(false);
+    const [selectedImages, setSelectedImages] = useState<Images[]>([]);
 
-    const positionRef = useRef(new Map<string, ImageRect | null >());
-    
+    const positionRef = useRef(new Map<string, ImageRect | null>());
+
     //     useEffect(() => {
     //         chrome.tabs.query({ active: true, currentWindow: true }, 
     //             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
@@ -30,6 +32,7 @@ function App() {
 
     //     // Load the PDF here if the URL points to a PDF.
     // }, [pdfUrl]);
+
 
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.target.files?.[0] || null;
@@ -75,10 +78,30 @@ function App() {
             return;
         }
         const zip = new JSZip();
+         await Promise.all(images.map(async (image, index) => {
+            if (image.imageType === "png") {
+                zip.file( `image_${index + 1}.png`,image.image)
+                return {
+                    name: `image_${index + 1}.png`,
+                    blob: image.image
+                }
+            }
+            const convertedBlob = await convertImageForDownload(image.image,
+                `image_${index + 1}`,
+                image.imageType,
+            )
+            if (!convertedBlob) {
+                alert("Failed to convert this image!");
+                return;
+            }
+            zip.file( `image_${index + 1}.${image.imageType}`,convertedBlob)
+            return {
+                name: `image_${index + 1}.${image.imageType}`,
+                blob: convertedBlob,
+            }
 
-        images.forEach((image, index) => {
-            zip.file(`${index + 1}.${image.imageType}`, image.image);
-        });
+        }))
+
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
 
@@ -142,7 +165,28 @@ function App() {
             }),
         );
     }
-    
+    async function handleDownloadSelectedImages() {
+        if (selectedImages.length === 0) {
+            alert("Please select at least one image")
+        }
+        const zip = new JSZip();
+
+        selectedImages.forEach((image, index) => {
+            zip.file(`${index + 1}.${image.imageType}`, image.image);
+        });
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+
+        const url = URL.createObjectURL(zipBlob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "images.zip";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
     return (
         <>
             <div className="pdf-container">
@@ -183,7 +227,7 @@ function App() {
                         <div className="header">
                             <h1>All Images</h1>
                             <div className="download-btn-all">
-                                <button onClick={handleDownloadAllImages} className="download-btn selected-images" disabled>
+                                <button onClick={handleDownloadSelectedImages} className="download-btn selected-images" disabled={selectedImages.length === 0}>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="800px"
@@ -242,7 +286,19 @@ function App() {
                                     {images.map((image, index) => (
                                         <tr key={index}>
                                             <td>
-                                                <input type="checkbox" className="select-checkbox" />
+                                                <input type="checkbox" className="select-checkbox" onChange={(event) => {
+                                                    const { checked } = event.target;
+
+                                                    setSelectedImages((prev) =>
+                                                        checked
+                                                            ? [...prev, image]
+                                                            : prev.filter((selectImage) =>
+                                                                selectImage.pageNumber !== image.pageNumber ||
+                                                                selectImage.paintIndex !== image.paintIndex
+                                                            )
+                                                    )
+
+                                                }} />
                                             </td>
                                             <td>{index + 1}</td>
                                             <td className="image-preview-cell">
@@ -321,7 +377,7 @@ function App() {
                     images={images}
                     selectedIndex={previewIndex}
                     onClose={() => setPreviewIndex(null)}
-                    positionRef = {positionRef}
+                    positionRef={positionRef}
                 />
             )}
         </>
