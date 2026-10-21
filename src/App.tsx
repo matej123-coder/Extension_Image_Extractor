@@ -282,7 +282,7 @@ function App() {
                     </label>
                 </div>
                 <div className="extract-btn">
-                    <button onClick={handleExtractionImages}> Extract Images</button>
+                    <button onClick={handleExtractionImages} disabled={!pdf || images.length !== 0}> Extract Images</button>
                 </div>
                 {images.length > 0 && (
                     <div className="image-section">
