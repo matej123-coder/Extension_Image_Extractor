@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadPdf } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
 import { type ImageFormat, type ImageRect, type Images } from "./types/types";
@@ -11,7 +11,7 @@ import PagePreview from "./component/PagePreview";
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
     //   const [loading, setLoading] = useState<boolean>(false);
-    // const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [images, setImages] = useState<Images[]>([]);
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
@@ -20,18 +20,16 @@ function App() {
     const [loadingDownload, setLoadingDownload] = useState(false);
     const positionRef = useRef(new Map<string, ImageRect | null>());
 
-    //     useEffect(() => {
-    //         chrome.tabs.query({ active: true, currentWindow: true }, 
-    //             (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
-    //     }, [pdfUrl])
+        useEffect(() => {
+            chrome.tabs.query({ active: true, currentWindow: true }, 
+                (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
+        }, [])
 
-    //     useEffect(() => {
-    //     if (!pdfUrl) return;
+        useEffect(() => {
+        if (!pdfUrl) return;
 
-    //     console.log("Active tab URL:", pdfUrl);
-
-    //     // Load the PDF here if the URL points to a PDF.
-    // }, [pdfUrl]);
+        // Load the PDF here if the URL points to a PDF.
+    }, [pdfUrl]);
 
 
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -282,7 +280,7 @@ function App() {
                     </label>
                 </div>
                 <div className="extract-btn">
-                    <button onClick={handleExtractionImages} disabled={!pdf || images.length !== 0}> Extract Images</button>
+                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) ||  images.length !== 0}> Extract Images</button>
                 </div>
                 {images.length > 0 && (
                     <div className="image-section">
