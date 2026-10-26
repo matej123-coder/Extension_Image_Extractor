@@ -11,6 +11,7 @@ import PagePreview from "./component/PagePreview";
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
     //   const [loading, setLoading] = useState<boolean>(false);
+    // const [checked, setChecked] = useState<boolean>(false)
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [images, setImages] = useState<Images[]>([]);
@@ -22,12 +23,17 @@ function App() {
 
         useEffect(() => {
             chrome.tabs.query({ active: true, currentWindow: true }, 
-                (tabs) => { const url = tabs[0]?.url; if (url) { setPdfUrl(url); } });
+                (tabs) => { 
+                    const url = tabs[0]?.url; 
+                    if (url && url.toLowerCase().includes(".pdf") && url.startsWith("http")) 
+                        { setPdfUrl(url); } 
+                
+                });
         }, [])
 
         useEffect(() => {
         if (!pdfUrl) return;
-
+         console.log(pdfUrl)
         // Load the PDF here if the URL points to a PDF.
     }, [pdfUrl]);
 
