@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { loadPdf } from "./pdf/loadPdf";
+import { loadPdf, loadPdfFromUrl } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
 import { type ImageFormat, type ImageRect, type Images } from "./types/types";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
@@ -11,7 +11,7 @@ import PagePreview from "./component/PagePreview";
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
     //   const [loading, setLoading] = useState<boolean>(false);
-    // const [checked, setChecked] = useState<boolean>(false)
+    const [loadFromUrl, setLoadFromUrl] = useState<boolean>(false)
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [images, setImages] = useState<Images[]>([]);
@@ -21,21 +21,14 @@ function App() {
     const [loadingDownload, setLoadingDownload] = useState(false);
     const positionRef = useRef(new Map<string, ImageRect | null>());
 
-        useEffect(() => {
-            chrome.tabs.query({ active: true, currentWindow: true }, 
-                (tabs) => { 
-                    const url = tabs[0]?.url; 
-                    if (url && url.toLowerCase().includes(".pdf") && url.startsWith("http")) 
-                        { setPdfUrl(url); } 
-                
-                });
-        }, [])
+    useEffect(() => {
+        chrome.tabs.query({ active: true, currentWindow: true },
+            (tabs) => {
+                const url = tabs[0]?.url;
+                if (url && url.toLowerCase().includes(".pdf") && url.startsWith("http")) { setPdfUrl(url); }
 
-        useEffect(() => {
-        if (!pdfUrl) return;
-         console.log(pdfUrl)
-        // Load the PDF here if the URL points to a PDF.
-    }, [pdfUrl]);
+            });
+    }, [])
 
 
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -43,7 +36,7 @@ function App() {
         if (!selectedFile) {
             return;
         }
-
+        
         if (selectedFile.type !== "application/pdf") {
             alert("Please upload a valid PDF.");
             return;
@@ -59,14 +52,26 @@ function App() {
     }
 
     async function handleExtractionImages() {
-        if (!pdf) {
+        let currentPdf = pdf;
+        if(pdfUrl){
+            const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
+            if(!pdfFromUrl){
+                return;
+            }
+            currentPdf = pdfFromUrl;
+            setPdf(pdfFromUrl);
+            setLoadFromUrl(true);
+        }
+        
+        if (!currentPdf) {
             alert("Please select a PDF first.");
             return;
         }
         setLoadingPdf(true);
 
         try {
-            const extractedImages = await extractImage(pdf);
+            
+            const extractedImages = await extractImage(currentPdf);
             console.log("This are my extracted images:", extractedImages);
             setImages(extractedImages);
         } catch (error) {
@@ -77,16 +82,16 @@ function App() {
     }
 
     async function handleDownloadAllImages() {
-         
+
         if (images.length === 0) {
-                alert("No images to download.");
-                return;
-            }
-        
+            alert("No images to download.");
+            return;
+        }
+
         setLoadingDownload(true)
         try {
             await new Promise((resolve) => setTimeout(resolve, 1500));
-           
+
             const zip = new JSZip();
 
             await Promise.all(images.map(async (image, index) => {
@@ -182,26 +187,26 @@ function App() {
                 return img;
             }),
         );
-        setSelectedImages((prevImages)=>
-            prevImages.map((img,i)=>{
-                  if (i === index) {
+        setSelectedImages((prevImages) =>
+            prevImages.map((img, i) => {
+                if (i === index) {
                     return { ...img, imageType: finalFormat };
                 }
-                return img;  
+                return img;
             }
             )
         )
     }
     async function handleDownloadSelectedImages() {
         if (selectedImages.length === 0) {
-                alert("No images to download.");
-                return;
-            }
-        
+            alert("No images to download.");
+            return;
+        }
+
         setLoadingDownload(true)
         try {
             await new Promise((resolve) => setTimeout(resolve, 1500));
-            
+
             const zip = new JSZip();
 
             await Promise.all(selectedImages.map(async (image, index) => {
@@ -286,7 +291,7 @@ function App() {
                     </label>
                 </div>
                 <div className="extract-btn">
-                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) ||  images.length !== 0}> Extract Images</button>
+                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) || images.length !== 0}> Extract Images</button>
                 </div>
                 {images.length > 0 && (
                     <div className="image-section">
@@ -437,15 +442,15 @@ function App() {
                     </div>
                 )}
             </div>
-            {pdf && previewIndex !== null && (
-                <PagePreview
-                    pdf={pdf}
-                    images={images}
-                    selectedIndex={previewIndex}
-                    onClose={() => setPreviewIndex(null)}
-                    positionRef={positionRef}
-                />
-            )}
+            {!loadFromUrl && pdf && previewIndex !== null && (
+    <PagePreview
+        pdf={pdf}
+        images={images}
+        selectedIndex={previewIndex}
+        onClose={() => setPreviewIndex(null)}
+        positionRef={positionRef}
+    />
+)}
         </>
     );
 }
