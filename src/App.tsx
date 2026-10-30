@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { loadPdf, loadPdfFromUrl } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
-import { type ImageFormat, type ImageRect, type Images } from "./types/types";
+import { type ImageFormat, type ImageRect, type Images, type PdfError } from "./types/types";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import JSZip from "jszip";
 import convertImageForDownload from "./pdf/convertImageForDownload";
 import PagePreview from "./component/PagePreview";
+import getPdfErrorMessage from "./error-hanlding/error";
+
 
 
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
-    
+
     const [loadFromUrl, setLoadFromUrl] = useState<boolean>(false)
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
@@ -20,7 +22,8 @@ function App() {
     const [selectedImages, setSelectedImages] = useState<Images[]>([]);
     const [loadingDownload, setLoadingDownload] = useState(false);
     const positionRef = useRef(new Map<string, ImageRect | null>());
-    const [finishProcessing, setFinishProcessing] = useState<boolean>(false); 
+    const [finishProcessing, setFinishProcessing] = useState<boolean>(false);
+    const [pdfError, setPdfError] = useState<PdfError | null>(null);
 
     useEffect(() => {
         chrome.tabs.query({ active: true, currentWindow: true },
@@ -37,7 +40,7 @@ function App() {
         if (!selectedFile) {
             return;
         }
-        
+
         if (selectedFile.type !== "application/pdf") {
             alert("Please upload a valid PDF.");
             return;
@@ -55,28 +58,39 @@ function App() {
     async function handleExtractionImages() {
         setFinishProcessing(false)
         try {
-        let currentPdf = pdf;
-        if(pdfUrl){
-            const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
-            if(!pdfFromUrl){
+            let currentPdf = pdf;
+            if (pdfUrl) {
+                try {
+                    const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
+                    currentPdf = pdfFromUrl;
+                    setPdf(pdfFromUrl);
+                    setLoadFromUrl(true);
+                } catch (error) {
+                    console.error("Failed to load PDF from URL:", error);
+                    setPdfError(getPdfErrorMessage(error));
+                    return;
+                }
+
+            }
+
+            if (!currentPdf) {
+                setPdfError({
+                    title: "No PDF Selected",
+                    message: "Please select a PDF file or open a PDF URL in your browser first.",
+                });
                 return;
             }
-            currentPdf = pdfFromUrl;
-            setPdf(pdfFromUrl);
-            setLoadFromUrl(true);
-        }
-        
-        if (!currentPdf) {
-            alert("Please select a PDF first.");
-            return;
-        }
             setLoadingPdf(true);
-            
+
             const extractedImages = await extractImage(currentPdf);
             console.log("This are my extracted images:", extractedImages);
             setImages(extractedImages);
         } catch (error) {
-            console.error("Failed to extract images:", error);
+            console.error("Failed to extract images", error)
+            setPdfError({
+                title: "Image Extraction Failed",
+                message: "We encountered a problem while extracting images from this PDF. Please try again.",
+            });
         } finally {
             setLoadingPdf(false);
             setFinishProcessing(true);
@@ -270,6 +284,25 @@ function App() {
                         <div className="loading-text">Downloading Images...</div>
                     </div>
                 )}
+                {pdfError && (
+                    <div className="pdf-error">
+                        <div className="pdf-error-icon">
+                            !
+                        </div>
+
+                        <div className="pdf-error-content">
+                            <h3>{pdfError.title}</h3>
+                            <p>{pdfError.message}</p>
+
+                            <button
+                                className="pdf-error-dismiss"
+                                onClick={() => setPdfError(null)}
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
+                )}
                 <h1>PDF Image Extractor</h1>
                 <h2>
                     Save every photo and graphic embedded in a PDF as a separate image
@@ -293,9 +326,9 @@ function App() {
                     </label>
                 </div>
                 <div className="extract-btn">
-                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) || images.length !== 0}> Extract Images</button>
+                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) || (images.length !== 0)}> Extract Images</button>
                 </div>
-                {images.length> 0 ? (
+                {images.length > 0 ? (
                     <div className="image-section">
                         <div className="header">
                             <h1>All Images</h1>
@@ -442,19 +475,19 @@ function App() {
 
 
                     </div>
-                ): finishProcessing ?(
+                ) : finishProcessing ? (
                     <div className="image-message"> <h1>Unfortunately no images have been found inside this PDF</h1> </div>
                 ) : null}
             </div>
             {!loadFromUrl && pdf && previewIndex !== null && (
-    <PagePreview
-        pdf={pdf}
-        images={images}
-        selectedIndex={previewIndex}
-        onClose={() => setPreviewIndex(null)}
-        positionRef={positionRef}
-    />
-)}
+                <PagePreview
+                    pdf={pdf}
+                    images={images}
+                    selectedIndex={previewIndex}
+                    onClose={() => setPreviewIndex(null)}
+                    positionRef={positionRef}
+                />
+            )}
         </>
     );
 }

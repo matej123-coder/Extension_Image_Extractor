@@ -25,3 +25,7 @@ export interface ImageDimensions{
     width: number;
     height: number;
 }
+export interface PdfError {
+    title: string;
+    message: string;
+}

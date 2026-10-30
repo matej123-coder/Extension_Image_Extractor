@@ -11,15 +11,11 @@ export async function loadPdf(file: File) {
     return pdf;
 }
 export async function loadPdfFromUrl(url: string) {
-  try {
+  
     const pdf = await pdfjsLib.getDocument({
       url,
       wasmUrl: "/pdfjs/wasm/node_modules/pdfjs-dist/wasm/",
     }).promise;
     return pdf;
-  } catch (error) {
-    console.error("Failed to load PDF:", error);
-    alert("Couldn't load the PDF. It may require authentication, be inaccessible, or be corrupted.");
-    return null;
-  }
+ 
 }
