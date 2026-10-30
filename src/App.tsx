@@ -57,6 +57,7 @@ function App() {
 
     async function handleExtractionImages() {
         setFinishProcessing(false)
+        setLoadingPdf(true);
         try {
             let currentPdf = pdf;
             if (pdfUrl) {
@@ -80,7 +81,7 @@ function App() {
                 });
                 return;
             }
-            setLoadingPdf(true);
+            
 
             const extractedImages = await extractImage(currentPdf);
             console.log("This are my extracted images:", extractedImages);
