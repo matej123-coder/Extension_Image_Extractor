@@ -10,7 +10,7 @@ import PagePreview from "./component/PagePreview";
 
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
-    //   const [loading, setLoading] = useState<boolean>(false);
+    
     const [loadFromUrl, setLoadFromUrl] = useState<boolean>(false)
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
@@ -20,6 +20,7 @@ function App() {
     const [selectedImages, setSelectedImages] = useState<Images[]>([]);
     const [loadingDownload, setLoadingDownload] = useState(false);
     const positionRef = useRef(new Map<string, ImageRect | null>());
+    const [finishProcessing, setFinishProcessing] = useState<boolean>(false); 
 
     useEffect(() => {
         chrome.tabs.query({ active: true, currentWindow: true },
@@ -52,6 +53,8 @@ function App() {
     }
 
     async function handleExtractionImages() {
+        setFinishProcessing(false)
+        try {
         let currentPdf = pdf;
         if(pdfUrl){
             const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
@@ -67,9 +70,7 @@ function App() {
             alert("Please select a PDF first.");
             return;
         }
-        setLoadingPdf(true);
-
-        try {
+            setLoadingPdf(true);
             
             const extractedImages = await extractImage(currentPdf);
             console.log("This are my extracted images:", extractedImages);
@@ -78,6 +79,7 @@ function App() {
             console.error("Failed to extract images:", error);
         } finally {
             setLoadingPdf(false);
+            setFinishProcessing(true);
         }
     }
 
@@ -293,7 +295,7 @@ function App() {
                 <div className="extract-btn">
                     <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) || images.length !== 0}> Extract Images</button>
                 </div>
-                {images.length > 0 && (
+                {images.length> 0 ? (
                     <div className="image-section">
                         <div className="header">
                             <h1>All Images</h1>
@@ -440,7 +442,9 @@ function App() {
 
 
                     </div>
-                )}
+                ): finishProcessing ?(
+                    <div className="image-message"> <h1>Unfortunately no images have been found inside this PDF</h1> </div>
+                ) : null}
             </div>
             {!loadFromUrl && pdf && previewIndex !== null && (
     <PagePreview

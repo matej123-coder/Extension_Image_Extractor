@@ -20,8 +20,8 @@ export default async function extractImages(pdf: PDFDocumentProxy) {
     const pageImages = await Promise.all(
       pageNumbers.map((pageNumber) => processPage(pageNumber, pdf, hashes,candidate)),
     );
-    for (const pageNumber of pageImages) {
-      extractedImages.push(...pageNumber);
+    for (const pageImage of pageImages) {
+      extractedImages.push(...pageImage);
     }
   }
 
@@ -57,7 +57,6 @@ async function processPage(
 
     const imageId = operatorList.argsArray[i][0];
 
-    
     const image = await new Promise<ExtractedImage | null>((resolve) =>
       (imageId.startsWith("g_") ? page.commonObjs : page.objs).get(
         imageId,
