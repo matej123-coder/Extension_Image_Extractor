@@ -52,6 +52,7 @@ function App() {
             setPdf(pdf);
         } catch (error) {
             console.error("Failed to load PDF:", error);
+            setPdfError(getPdfErrorMessage(error))
         }
     }
 
@@ -101,7 +102,10 @@ function App() {
     async function handleDownloadAllImages() {
 
         if (images.length === 0) {
-            alert("No images to download.");
+            setPdfError({
+                title:"No images",
+                message: "There are no selected images to download"
+            });
             return;
         }
 
@@ -151,6 +155,10 @@ function App() {
 
         } catch (error) {
             console.error("Failed to download images: ", error);
+            setPdfError({
+                title: "Couldn't download images",
+                message: "Something went wrong couldn't download the images"
+            })
         } finally {
             setLoadingDownload(false)
         }
@@ -216,7 +224,10 @@ function App() {
     }
     async function handleDownloadSelectedImages() {
         if (selectedImages.length === 0) {
-            alert("No images to download.");
+            setPdfError({
+                title:"No images",
+                message: "There are no selected images to download"
+            });
             return;
         }
 
@@ -266,6 +277,7 @@ function App() {
 
         } catch (error) {
             console.error("Failed to download images: ", error);
+            setPdfError(getPdfErrorMessage(error))
         } finally {
             setLoadingDownload(false)
         }
