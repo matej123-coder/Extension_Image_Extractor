@@ -13,7 +13,7 @@ import getPdfErrorMessage from "./error-hanlding/error";
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
 
-    const [loadFromUrl, setLoadFromUrl] = useState<boolean>(false)
+    // const [loadFromUrl, setLoadFromUrl] = useState<boolean>(false)
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [images, setImages] = useState<Images[]>([]);
@@ -66,7 +66,7 @@ function App() {
                     const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
                     currentPdf = pdfFromUrl;
                     setPdf(pdfFromUrl);
-                    setLoadFromUrl(true);
+                    //setLoadFromUrl(true);
                 } catch (error) {
                     console.error("Failed to load PDF from URL:", error);
                     setPdfError(getPdfErrorMessage(error));
@@ -492,7 +492,7 @@ function App() {
                     <div className="image-message"> <h1>Unfortunately no images have been found inside this PDF</h1> </div>
                 ) : null}
             </div>
-            {!loadFromUrl && pdf && previewIndex !== null && (
+            { pdf && previewIndex !== null && (
                 <PagePreview
                     pdf={pdf}
                     images={images}
