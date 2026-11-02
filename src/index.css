@@ -427,6 +427,11 @@ body {
     text-align: left;
     animation: errorFadeIn 0.25s ease-in-out;
 }
+.pdf-warning{
+    background: #F5BF00 !important;
+    border: 1px solid #f0d881 !important;
+    border-left: 4px solid #1C1C1A !important;
+}
 
 .pdf-error-icon {
     display: flex;
@@ -441,6 +446,9 @@ body {
     font-size: 20px;
     font-weight: 700;
 }
+.pdf-warning-icon{
+    background: #1C1C1A !important;
+}
 
 .pdf-error-content {
     flex: 1;
@@ -451,12 +459,17 @@ body {
     color: #a52834;
     font-size: 17px;
 }
-
+.pdf-warning-content h3{
+    color: #1C1C1A !important;
+}
 .pdf-error-content p {
     margin: 0;
     color: #6c3035;
     font-size: 14px;
     line-height: 1.6;
+}
+.pdf-warning-content p {
+    color: #1C1C1A !important;
 }
 
 .pdf-error-dismiss {
@@ -470,10 +483,18 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
+.pdf-warning-dismiss{
+ border: 1px solid #1C1C1A !important;
+ color: #1C1C1A !important;
+}
 .pdf-error-dismiss:hover {
     background: #dc3545;
     color: white;
+}
+.pdf-warning-dismiss:hover{
+    background: #1C1C1A !important;
+    color: white !important;
+  
 }
 
 @keyframes errorFadeIn {

@@ -513,17 +513,17 @@ function App() {
 
                     </div>
                 ) : finishProcessing ? (
-                    <div className="pdf-error">
-                        <div className="pdf-error-icon">
+                    <div className="pdf-error pdf-warning">
+                        <div className="pdf-error-icon pdf-warning-icon">
                             !
                         </div>
 
-                        <div className="pdf-error-content">
+                        <div className="pdf-error-content pdf-warning-content">
                             <h3>There are no images</h3>
                             <p>Unfortunately there are no images in the pdf </p>
 
                             <button
-                                className="pdf-error-dismiss"
+                                className="pdf-error-dismiss pdf-warning-dismiss"
                                 onClick={() => setFinishProcessing(false)}
                             >
                                 Dismiss
