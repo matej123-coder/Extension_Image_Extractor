@@ -23,7 +23,22 @@ body {
     padding-left: max(2rem, 10vw);
     padding-right: max(2rem, 10vw);
 }
-
+.logo { 
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 100px;
+}
+.logo img{
+    width: 100%;
+    object-fit: contain;
+    height: auto;
+    display: block;
+    
+}
 .pdf-container h1 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -428,9 +443,9 @@ body {
     animation: errorFadeIn 0.25s ease-in-out;
 }
 .pdf-warning{
-    background: #F5BF00 !important;
+    background-color: #FFF4CC !important;
     border: 1px solid #f0d881 !important;
-    border-left: 4px solid #1C1C1A !important;
+    border-left: 4px solid #DCA614 !important;
 }
 
 .pdf-error-icon {
@@ -447,7 +462,7 @@ body {
     font-weight: 700;
 }
 .pdf-warning-icon{
-    background: #1C1C1A !important;
+    background: #DCA614 !important;
 }
 
 .pdf-error-content {

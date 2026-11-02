@@ -322,6 +322,9 @@ function App() {
                         </div>
                     </div>
                 )}
+                <div className="logo">
+                    <img src="/images/logo.png" alt="Logo" />
+                </div>
                 <h1>PDF Image Extractor</h1>
                 <h2>
                     Save every photo and graphic embedded in a PDF as a separate image
