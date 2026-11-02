@@ -13,7 +13,6 @@ import getPdfErrorMessage from "./error-hanlding/error";
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
 
-    // const [loadFromUrl, setLoadFromUrl] = useState<boolean>(false)
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [images, setImages] = useState<Images[]>([]);
@@ -104,7 +103,7 @@ function App() {
         if (images.length === 0) {
             setPdfError({
                 title:"No images",
-                message: "There are no selected images to download"
+                message: "There are no images to download."
             });
             return;
         }
@@ -339,7 +338,7 @@ function App() {
                     </label>
                 </div>
                 <div className="extract-btn">
-                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl) || (images.length !== 0)}> Extract Images</button>
+                    <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl)}> Extract Images</button>
                 </div>
                 {images.length > 0 ? (
                     <div className="image-section">
@@ -489,7 +488,23 @@ function App() {
 
                     </div>
                 ) : finishProcessing ? (
-                    <div className="image-message"> <h1>Unfortunately no images have been found inside this PDF</h1> </div>
+                    <div className="pdf-error">
+                        <div className="pdf-error-icon">
+                            !
+                        </div>
+
+                        <div className="pdf-error-content">
+                            <h3>There are no images</h3>
+                            <p>Unfortunately there are no images in the pdf </p>
+
+                            <button
+                                className="pdf-error-dismiss"
+                                onClick={() => setFinishProcessing(false)}
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
                 ) : null}
             </div>
             { pdf && previewIndex !== null && (

@@ -1,5 +1,5 @@
 import type { PDFPageProxy, PageViewport } from "pdfjs-dist";
-import type { ImageRect } from "./parseImageCoordinates";
+import type { ImageRect } from "../types/types";
 
 const RENDER_SCALE = 1.5;
 
