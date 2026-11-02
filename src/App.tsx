@@ -7,6 +7,7 @@ import JSZip from "jszip";
 import convertImageForDownload from "./pdf/convertImageForDownload";
 import PagePreview from "./component/PagePreview";
 import getPdfErrorMessage from "./error-hanlding/error";
+import generatePdfThumbnail from "./pdf/generateThumbnail";
 
 
 
@@ -23,6 +24,8 @@ function App() {
     const positionRef = useRef(new Map<string, ImageRect | null>());
     const [finishProcessing, setFinishProcessing] = useState<boolean>(false);
     const [pdfError, setPdfError] = useState<PdfError | null>(null);
+    const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
+    const [fileName, setFileName] = useState<string | null>(null);
 
     useEffect(() => {
         chrome.tabs.query({ active: true, currentWindow: true },
@@ -36,6 +39,7 @@ function App() {
 
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.target.files?.[0] || null;
+        
         if (!selectedFile) {
             return;
         }
@@ -44,11 +48,14 @@ function App() {
             alert("Please upload a valid PDF.");
             return;
         }
-
+        setFileName(selectedFile.name ?? null);
         try {
             const pdf = await loadPdf(selectedFile);
+            const thumbnail = await generatePdfThumbnail(pdf);
             console.log("Loaded PDF:", pdf);
             setPdf(pdf);
+            setPdfThumbnail(thumbnail);
+
         } catch (error) {
             console.error("Failed to load PDF:", error);
             setPdfError(getPdfErrorMessage(error))
@@ -81,7 +88,7 @@ function App() {
                 });
                 return;
             }
-            
+
 
             const extractedImages = await extractImage(currentPdf);
             console.log("This are my extracted images:", extractedImages);
@@ -102,7 +109,7 @@ function App() {
 
         if (images.length === 0) {
             setPdfError({
-                title:"No images",
+                title: "No images",
                 message: "There are no images to download."
             });
             return;
@@ -224,7 +231,7 @@ function App() {
     async function handleDownloadSelectedImages() {
         if (selectedImages.length === 0) {
             setPdfError({
-                title:"No images",
+                title: "No images",
                 message: "There are no selected images to download"
             });
             return;
@@ -323,19 +330,37 @@ function App() {
                 </h2>
                 <div className="input-field">
                     <label htmlFor="pdf-upload" className="file-upload">
-                        <span className="file-upload-icon">↑</span>
+                        {!pdf && (
+                            <>
+                            <span className="file-upload-icon">↑</span>
                         <span className="file-upload-title">Choose a PDF</span>
                         <span className="file-upload-text">
                             or drag and drop your file here
                         </span>
-
+                        
+                        
+                        </>)
+                        }
                         <input
                             id="pdf-upload"
                             type="file"
                             accept="application/pdf"
                             onChange={handleFileChange}
                         />
+                        {pdfThumbnail && (
+                            <div className="pdf-thumbnail-container">
+                            <div className="pdf-thumbnail">
+                                <img src={pdfThumbnail} alt="PDF first page preview" />
+                                
+                            </div>
+                            <div className="pdf-thumbnail-title">
+                                    {fileName}
+                            </div>
+                            </div>
+                            
+                        )}
                     </label>
+
                 </div>
                 <div className="extract-btn">
                     <button onClick={handleExtractionImages} disabled={(!pdf && !pdfUrl)}> Extract Images</button>
@@ -507,7 +532,7 @@ function App() {
                     </div>
                 ) : null}
             </div>
-            { pdf && previewIndex !== null && (
+            {pdf && previewIndex !== null && (
                 <PagePreview
                     pdf={pdf}
                     images={images}
