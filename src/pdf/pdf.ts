@@ -1,7 +1,9 @@
+import "../polyfill.ts";
+
 import * as pdfjsLib from "pdfjs-dist";
-import workerSrc from "pdfjs-dist/build/pdf.worker.mjs?url";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+import PdfWorker from "./pdf.worker.ts?worker";
 
+pdfjsLib.GlobalWorkerOptions.workerPort = new PdfWorker();
 
 export default pdfjsLib;
