@@ -107,7 +107,7 @@ export default function PagePreview({ pdf, images, selectedIndex, onClose,positi
         >
             <div onClick={(e) => e.stopPropagation()} style={{  }}>
                 <div style={{ marginBottom: 8, display: "flex", justifyContent: "flex-end" }}>
-                    <button onClick={onClose}>Close</button>
+                    <button className="close-btn" onClick={onClose}>Close</button>
                 </div>
                 <canvas ref={canvasRef} />
             </div>

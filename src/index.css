@@ -19,7 +19,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-top: max(5.2rem, 4vw);
+    padding-top: max(2rem, 4vw);
     padding-left: max(2rem, 10vw);
     padding-right: max(2rem, 10vw);
 }
@@ -46,7 +46,7 @@ body {
 
 .pdf-container h2 {
     font-size: 1rem;
-    margin-top: 2.4rem;
+    margin-top: 1rem;
     font-weight: 600;
 }
 
@@ -565,4 +565,21 @@ body {
     width: auto;
     height: auto;
     object-fit: contain;
+}
+.close-btn{
+    padding: 6px 14px;
+    background: #773179;
+    border: 1px solid transparent;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    padding: clamp(0.5rem, 0.8vw, 0.65rem)
+             clamp(0.7rem, 1vw, 1rem);
+    font-weight: 700;  
+}
+.close-btn:hover{
+    background: #914394;
 }

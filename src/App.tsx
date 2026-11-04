@@ -304,7 +304,7 @@ function App() {
             <div className="loading-text">Downloading Images...</div>
           </div>
         )}
-        {pdfError && (
+        {pdfError ? (
           <div className="pdf-error">
             <div className="pdf-error-icon">!</div>
 
@@ -314,21 +314,36 @@ function App() {
 
               <button
                 className="pdf-error-dismiss"
-                onClick={() => setPdfError(null)}
+                onClick={() => {setPdfError(null); setFinishProcessing(false);}}
               >
                 Dismiss
               </button>
             </div>
           </div>
-        )}
+        ):finishProcessing && images.length === 0 && !pdfError ? (
+          <div className="pdf-error pdf-warning">
+            <div className="pdf-error-icon pdf-warning-icon">!</div>
+
+            <div className="pdf-error-content pdf-warning-content">
+              <h3>There are no images</h3>
+              <p>Unfortunately there are no images in this pdf </p>
+
+              <button
+                className="pdf-error-dismiss pdf-warning-dismiss"
+                onClick={() => setFinishProcessing(false)}
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        ):null}
+        
         <div className="logo">
           <img src="/images/logo.png" alt="Logo" />
         </div>
         <h1>PDF Image Extractor</h1>
         <h2>
-          Save every photo and graphic embedded in a PDF as a separate image
-          file and download all pictures at once as a ZIP archive for further
-          processing
+          Extract images and graphics from any PDF document. Preview, select, and download individual images or export them all together in a ZIP archive.
         </h2>
         <div className="input-field">
           <label htmlFor="pdf-upload" className="file-upload">
@@ -424,7 +439,7 @@ function App() {
                     <th>Width</th>
                     <th>Height</th>
                     <th>Type</th>
-                    <th>Page Number</th>
+                    <th>Page No.</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -521,23 +536,7 @@ function App() {
               </table>
             </div>
           </div>
-        ) : finishProcessing ? (
-          <div className="pdf-error pdf-warning">
-            <div className="pdf-error-icon pdf-warning-icon">!</div>
-
-            <div className="pdf-error-content pdf-warning-content">
-              <h3>There are no images</h3>
-              <p>Unfortunately there are no images in this pdf </p>
-
-              <button
-                className="pdf-error-dismiss pdf-warning-dismiss"
-                onClick={() => setFinishProcessing(false)}
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-        ) : null}
+        )  : null}
       </div>
       {pdf && previewIndex !== null && (
         <PagePreview

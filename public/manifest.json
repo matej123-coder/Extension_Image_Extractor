@@ -1,11 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "React Chrome Extension",
+  "name": "ImageKO - PDF Image Extractor",
   "version": "1.0.0",
-  "description": "An extension that extracts images from PDFs",
+  "description": "Extract images from uploaded PDFs or directly from PDFs open in your active browser tab. Preview and download the extracted images.",
   "action": {
     "default_popup": "index.html"
   },
   "permissions": ["activeTab"],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": ["<all_urls>"],
+  "icons":{
+
+    "16": "./images/16x16.png",
+    "32": "./images/32x32.png",
+    "48": "./images/48x48.png",
+    "128": "./images/128x128.png"
+  }
 }

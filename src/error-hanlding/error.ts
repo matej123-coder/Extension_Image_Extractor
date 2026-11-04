@@ -6,7 +6,7 @@ export default function getPdfErrorMessage(error: unknown): PdfError {
             case "InvalidPDFException":
                 return {
                     title: "Invalid PDF",
-                    message: "The selected URL does not contain a valid PDF file.",
+                    message: "The selected file or URL does not contain a valid PDF file.",
                 };
 
             case "MissingPDFException":
