@@ -72,7 +72,12 @@ function App() {
           const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
           currentPdf = pdfFromUrl;
           setPdf(pdfFromUrl);
-          //setLoadFromUrl(true);
+         
+          const thumbnail = await generatePdfThumbnail(currentPdf);
+          setPdfThumbnail(thumbnail);   
+          const pdfName = pdfUrl.split("/").at(pdfUrl.split("/").length - 1) ?? "document.pdf";
+          const clearPDFName =  decodeURIComponent(pdfName);
+          setFileName(clearPDFName);
         } catch (error) {
           console.error("Failed to load PDF from URL:", error);
           setPdfError(getPdfErrorMessage(error));
@@ -522,7 +527,7 @@ function App() {
 
             <div className="pdf-error-content pdf-warning-content">
               <h3>There are no images</h3>
-              <p>Unfortunately there are no images in the pdf </p>
+              <p>Unfortunately there are no images in this pdf </p>
 
               <button
                 className="pdf-error-dismiss pdf-warning-dismiss"

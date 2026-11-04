@@ -130,6 +130,5 @@ if (typeof Math.sumPrecise !== "function") {
     configurable: true,
   });
 }
-console.log("Polyfills loaded:", typeof Map.prototype.getOrInsertComputed);
 
 export {};
