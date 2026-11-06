@@ -294,7 +294,7 @@ function App() {
         {loadingPdf && (
           <div id="loaderSpinner" className="">
             <div className="loading-spinner"></div>
-            <div className="loading-text">Loading PDF...</div>
+            <div className="loading-text">Extracting Images...</div>
           </div>
         )}
         {loadingDownload && (
