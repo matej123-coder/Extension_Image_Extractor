@@ -8,9 +8,7 @@ export default function convertImage(
     hashes: Set<number>,
     candidate: Map<string, HTMLCanvasElement | null>
 ): Promise<Blob | null> {
-    try {
-
-        const canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
 
         canvas.width =
             bitmap instanceof VideoFrame
@@ -28,6 +26,9 @@ export default function convertImage(
         if (!ctx) {
             return Promise.resolve(null);
         }
+    try {
+
+        
         ctx.drawImage(bitmap, 0, 0)
 
         const mimeType =
@@ -108,6 +109,10 @@ export default function convertImage(
         });
 
         return Promise.resolve(null);
+    }
+    finally {
+        canvas.width = 0;
+        canvas.height = 0;
     }
 }
 

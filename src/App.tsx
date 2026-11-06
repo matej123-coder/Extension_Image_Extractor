@@ -38,7 +38,7 @@ function App() {
     });
   }, []);
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) { 
     const selectedFile = event.target.files?.[0] || null;
 
     if (!selectedFile) {
@@ -67,6 +67,7 @@ function App() {
     setLoadingPdf(true);
     try {
       let currentPdf = pdf;
+
       if (pdfUrl) {
         try {
           const pdfFromUrl = await loadPdfFromUrl(pdfUrl);

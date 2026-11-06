@@ -43,6 +43,7 @@ async function processPage(
   const pageImages: Images[] = [];
 
   let paintIndex = -1;
+  try{
   for (let i = 0; i < operatorList.fnArray.length; i++) {
     const operation = operatorList.fnArray[i];
 
@@ -78,6 +79,7 @@ async function processPage(
       continue;
     }
     
+    
 
     pageImages.push({
       image: blob,
@@ -89,6 +91,10 @@ async function processPage(
       paintIndex,
     });
   }
+}
+finally{
+    page.cleanup();
+}
   
   return pageImages;
 }
