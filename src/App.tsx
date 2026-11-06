@@ -53,7 +53,7 @@ function App() {
     try {
       const pdf = await loadPdf(selectedFile);
       const thumbnail = await generatePdfThumbnail(pdf);
-      console.log("Loaded PDF:", pdf);
+      
       setPdf(pdf);
       setPdfThumbnail(thumbnail);
     } catch (error) {
@@ -95,7 +95,6 @@ function App() {
       }
 
       const extractedImages = await extractImage(currentPdf);
-      console.log("This are my extracted images:", extractedImages);
       setImages(extractedImages);
     } catch (error) {
       console.error("Failed to extract images", error);

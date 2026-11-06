@@ -34,7 +34,7 @@ async function processPage(
   hashes: Set<number>,
   candidate: Map<string,HTMLCanvasElement | null>,
 ): Promise<Images[]> {
-  console.log("Processing page:", pageNumber);
+
   const page = await pdf.getPage(pageNumber);
 
   
