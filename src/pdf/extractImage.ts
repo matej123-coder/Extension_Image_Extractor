@@ -2,6 +2,7 @@ import type { PDFDocumentProxy } from "pdfjs-dist";
 import pdfjsLib from "./pdf";
 import type { ExtractedImage, Images } from "../types/types";
 import convertImage from "./convertImage";
+import { isOverlay } from "../utils/utils";
 
 const CONCURECY_LIMIT = 2;
 
@@ -48,12 +49,11 @@ async function processPage(
     if (operation !== pdfjsLib.OPS.paintImageXObject) {
       continue;
     }
-    paintIndex++;
-    
-    
-    if (operatorList.fnArray[i - 5] === pdfjsLib.OPS.paintFormXObjectBegin) {
+ 
+    if (isOverlay(operatorList, i)) {
       continue;
     }
+    paintIndex++;
 
     const imageId = operatorList.argsArray[i][0];
 
@@ -63,7 +63,7 @@ async function processPage(
         resolve,
       ),
     );
-    
+   
     if (!image || !image.bitmap || !image.width || !image.height) {
       console.warn("Image object is null:", {
         pageNumber,
