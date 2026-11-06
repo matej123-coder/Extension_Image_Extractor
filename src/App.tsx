@@ -39,6 +39,14 @@ function App() {
   }, []);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) { 
+    if (pdfUrl) {
+    setPdfError({
+      title: "PDF Already Loaded",
+      message: "You cannot upload a PDF while being on an active tab with PDF URL.",
+    });
+    event.target.value = "";
+    return;
+  }
     const selectedFile = event.target.files?.[0] || null;
 
     if (!selectedFile) {
@@ -46,7 +54,10 @@ function App() {
     }
 
     if (selectedFile.type !== "application/pdf") {
-      alert("Please upload a valid PDF.");
+      setPdfError({
+        title: "Invalid File Type",
+        message: "Please select a valid PDF file.",     
+      });
       return;
     }
     setFileName(selectedFile.name ?? null);
