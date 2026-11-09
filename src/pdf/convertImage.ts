@@ -6,7 +6,7 @@ export default function convertImage(
     format: ImageFormat,
     imageId: string,
     hashes: Set<number>,
-    candidate: Map<string, HTMLCanvasElement | null>
+   candidate: Map<string, HTMLCanvasElement | null>
 ): Promise<Blob | null> {
     const canvas = document.createElement("canvas");
 
@@ -109,10 +109,6 @@ export default function convertImage(
         });
 
         return Promise.resolve(null);
-    }
-    finally {
-        canvas.width = 0;
-        canvas.height = 0;
     }
 }
 

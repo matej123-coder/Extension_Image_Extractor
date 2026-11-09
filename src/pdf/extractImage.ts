@@ -32,7 +32,7 @@ async function processPage(
   pageNumber: number,
   pdf: PDFDocumentProxy,
   hashes: Set<number>,
-  candidate: Map<string,HTMLCanvasElement | null>,
+ candidate: Map<string,HTMLCanvasElement | null>,
 ): Promise<Images[]> {
 
   const page = await pdf.getPage(pageNumber);

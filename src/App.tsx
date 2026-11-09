@@ -13,6 +13,8 @@ import convertImageForDownload from "./pdf/convertImageForDownload";
 import PagePreview from "./component/PagePreview";
 import getPdfErrorMessage from "./error-hanlding/error";
 import generatePdfThumbnail from "./pdf/generateThumbnail";
+import { getImages, saveImages } from "./db/imagesDB";
+import { retrievePDFInfo, savePDFInfo } from "./db/pdfDB";
 
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
@@ -37,7 +39,29 @@ function App() {
       }
     });
   }, []);
+  useEffect(()=>{
+     async function retrieveInfoFromDB() {
+        try {
+            const storedImages = await getImages();
+            const pdfInfo = await retrievePDFInfo();
+            if(pdfInfo){
+                setPdfThumbnail(pdfInfo.thumbnail);
+                setFileName(pdfInfo.pdfFileName);
+                setPdf(pdfInfo.pdf);
+            }
+            if (storedImages && storedImages.length > 0) {
+                setImages(storedImages);
+                
+                console.log("Retrieved images from IndexedDB:", storedImages);
+            }
+        }
+        catch (error) {
+          console.error("Couldn't retrieve images from IndexedDB:", error);
+        }
+     }
+     retrieveInfoFromDB();
 
+  }, []);
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) { 
     if (pdfUrl) {
     setPdfError({
@@ -78,17 +102,18 @@ function App() {
     setLoadingPdf(true);
     try {
       let currentPdf = pdf;
-
+      let fileInfoName = fileName;
       if (pdfUrl) {
         try {
           const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
           currentPdf = pdfFromUrl;
           setPdf(pdfFromUrl);
-         
+        
           const thumbnail = await generatePdfThumbnail(currentPdf);
           setPdfThumbnail(thumbnail);   
           const pdfName = pdfUrl.split("/").at(pdfUrl.split("/").length - 1) ?? "document.pdf";
           const clearPDFName =  decodeURIComponent(pdfName);
+          fileInfoName = clearPDFName;
           setFileName(clearPDFName);
         } catch (error) {
           console.error("Failed to load PDF from URL:", error);
@@ -108,6 +133,9 @@ function App() {
 
       const extractedImages = await extractImage(currentPdf);
       setImages(extractedImages);
+      await saveImages(extractedImages);
+      await savePDFInfo(currentPdf,fileInfoName);
+
     } catch (error) {
       console.error("Failed to extract images", error);
       setPdfError({
