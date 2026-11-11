@@ -380,9 +380,9 @@ function App() {
         <div className="logo">
           <img src="/images/logo.png" alt="Logo" />
         </div>
-        <h1>PDF Image Extractor</h1>
+        <h1>ImageKO - PDF Image Extractor</h1>
         <h2>
-          Extract images and graphics from any PDF document. Preview, select, and download individual images or export them all together in a ZIP archive.
+          Extract images from any PDF document. Preview, select, and download individual images or export them all together in a ZIP archive.
         </h2>
         <div className="input-field">
           <label htmlFor="pdf-upload" className="file-upload">
