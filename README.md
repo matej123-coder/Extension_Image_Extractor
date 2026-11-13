@@ -1,75 +1,40 @@
-# React + TypeScript + Vite
+# ImageKO – PDF Image Extractor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ImageKO** is a Chrome extension that makes extracting images from PDF documents quick and effortless. Instead of taking screenshots or manually searching through documents, you can extract embedded images and download them individually or all at once.
 
-Currently, two official plugins are available:
+Whether you're collecting graphics for a project, retrieving images from documents, or simply saving visual assets, ImageKO provides a straightforward way to get the job done.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Extract Images from PDFs** – Extract embedded images from PDF documents.
+- **Load Local PDFs** – Select and process PDF files directly from your computer.
+- **Extract from Browser Tabs** – Load PDF documents directly from the active browser tab.
+- **Image Previews** – Preview extracted images before downloading.
+- **Flexible Downloads** – Download individual images or multiple images at once.
+- **Multiple Formats** – Convert and download images in PNG, JPG, or WebP format.
+- **Duplicate Detection** – Automatically identify and skip duplicate images.
+- **Simple Interface** – A clean and intuitive interface designed for a smooth experience.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How to Use
 
-## Expanding the ESLint configuration
+1. Install ImageKO from the Chrome Web Store.
+2. Open a PDF file in Chrome or select one from your computer.
+3. Click the ImageKO extension icon.
+4. Start extracting images.
+5. Preview, select, and download the images you need.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Built With
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React
+- TypeScript
+- Vite
+- PDF.js
+- JSZip
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Privacy
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+ImageKO processes PDF documents locally in your browser. Your PDF files and extracted images are not uploaded to an external server.
 
-```
+---
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+**ImageKO – Extract images from PDFs, effortlessly.**
