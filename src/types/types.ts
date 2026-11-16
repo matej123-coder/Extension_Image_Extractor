@@ -29,3 +29,4 @@ export interface PdfError {
     title: string;
     message: string;
 }
+export type CheckBoxOptions = 'currentTab' | 'fileUpload' | 'pdfUrl'

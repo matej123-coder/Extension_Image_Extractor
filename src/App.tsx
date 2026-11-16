@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { loadPdf, loadPdfFromUrl } from "./pdf/loadPdf";
 import extractImage from "./pdf/extractImage";
 import {
+  type  CheckBoxOptions,
   type ImageFormat,
   type ImageRect,
   type Images,
@@ -15,9 +16,11 @@ import getPdfErrorMessage from "./error-hanlding/error";
 import generatePdfThumbnail from "./pdf/generateThumbnail";
 import { getImages, saveImages } from "./db/imagesDB";
 import { retrievePDFInfo, savePDFInfo } from "./db/pdfDB";
+import FileUploader from "./component/FileUploader";
 
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
+  const [checkBoxValue,setCheckBoxValue] = useState<CheckBoxOptions>('currentTab');
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [images, setImages] = useState<Images[]>([]);
@@ -34,7 +37,7 @@ function App() {
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const url = tabs[0]?.url;
-      if (url && url.toLowerCase().includes(".pdf") && url.startsWith("http")) {
+      if (url && url.toLowerCase().includes(".pdf")) {
         setPdfUrl(url);
       }
     });
@@ -378,39 +381,31 @@ function App() {
         ):null}
         
         <div className="logo">
+            <div className="heading">
+                <h1 className="project-name">ImageKO </h1>
+                <h4 className="project-purpose">PDF Image Extractor</h4>
+            </div>
           <img src="/images/logo.png" alt="Logo" />
         </div>
-        <h1>ImageKO - PDF Image Extractor</h1>
+        
         <h2>
           Extract images from any PDF document. Preview, select, and download individual images or export them all together in a ZIP archive.
         </h2>
-        <div className="input-field">
-          <label htmlFor="pdf-upload" className="file-upload">
-            {!pdf && (
-              <>
-                <span className="file-upload-icon">↑</span>
-                <span className="file-upload-title">Choose a PDF</span>
-                <span className="file-upload-text">
-                  or drag and drop your file here
-                </span>
-              </>
-            )}
-            <input
-              id="pdf-upload"
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-            />
-            {pdfThumbnail && (
-              <div className="pdf-thumbnail-container">
-                <div className="pdf-thumbnail">
-                  <img src={pdfThumbnail} alt="PDF first page preview" />
-                </div>
-                <div className="pdf-thumbnail-title">{fileName}</div>
-              </div>
-            )}
-          </label>
+        <div className="radio-input-container">
+            <div className="radio-button-field">
+                <input type="radio" id="currentTab" name="file" value="currentTab" checked={checkBoxValue === 'currentTab'} onChange={()=>setCheckBoxValue('currentTab')}/>
+                <label htmlFor="currentTab">Current Tab</label>
+            </div>
+            <div className="radio-button-field">
+                <input type="radio" id="uploadFile" name="file" value="uploadFile" checked={checkBoxValue === 'fileUpload'} onChange={()=>setCheckBoxValue('fileUpload')} />
+                <label htmlFor="uploadFile">Upload File</label>
+            </div>
+            <div className="radio-button-field">
+                <input type="radio" id="pdfUrl" name="file" value="pdfUrl" checked={checkBoxValue === 'pdfUrl'} onChange={()=>setCheckBoxValue('pdfUrl')}/>
+                <label htmlFor="pdfUrl">PDF URL</label>
+            </div>
         </div>
+        <FileUploader fileName={fileName} pdf={pdf} pdfThumbnail={pdfThumbnail} handleFileChange={handleFileChange}/>
         <div className="extract-btn">
           <button onClick={handleExtractionImages} disabled={!pdf && !pdfUrl}>
             {" "}

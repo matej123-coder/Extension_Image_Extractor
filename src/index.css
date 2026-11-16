@@ -27,13 +27,13 @@ body {
     background: transparent;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-direction: row;
     margin-bottom: 1rem;
-    width: 70px;
+    width: 100%;
 }
 .logo img{
-    width: 100%;
+    width: 70px;
     object-fit: contain;
     height: auto;
     display: block;
@@ -313,7 +313,13 @@ body {
     justify-content: space-between;
     padding-block: 15px;
 }
-
+.project-name{ 
+    font-weight: 700 !important;
+    font-size: 2rem !important;
+}
+.project-purpose{
+    font-size: 1.2rem !important;
+}
 #loaderSpinner {
     position: fixed;
     top: 0;
@@ -582,4 +588,57 @@ body {
 }
 .close-btn:hover{
     background: #914394;
+}
+.radio-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 5px;
+    background-color: #201d24;
+    border: 1px solid #39343e;
+    border-radius: 10px;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.radio-button-field {
+    flex: 1;
+    position: relative;
+}
+
+.radio-button-field input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-button-field label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 12px;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #d8c4df;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.radio-button-field label:hover {
+    background-color: #302a35;
+    color: white;
+}
+
+.radio-button-field input:checked + label {
+    background-color: #773179;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.radio-button-field input:focus-visible + label {
+    outline: 2px solid #914394;
+    outline-offset: 2px;
 }
