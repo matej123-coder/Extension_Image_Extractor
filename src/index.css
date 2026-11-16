@@ -642,3 +642,48 @@ body {
     outline: 2px solid #914394;
     outline-offset: 2px;
 }
+.pdf-url-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pdf-url-header label {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.pdf-url-header p {
+    color: #a79baa;
+    font-size: 1rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.input-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #39343e;
+    border-radius: 7px;
+    background-color: #201d24;
+    color: white;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.input-field input::placeholder {
+    color: #a79baa;
+}
+
+.input-field input:focus {
+    border-color: #914394;
+}
+
+.pdf-url-hint {
+    color: #a79baa;
+    font-size: 0.75rem;
+    margin-top: 10px;
+}
