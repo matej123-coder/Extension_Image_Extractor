@@ -104,7 +104,19 @@ function App() {
             setPdfError(getPdfErrorMessage(error));
         }
     }
+    async function handleBackToExtraction(){
+         await saveImages([]);
+        await savePDFInfo(null, null);
 
+        setImages([]);
+        setSelectedImages([]);
+        setPdf(null);
+        setPdfThumbnail(null);
+        setFileName(null);
+        setPreviewIndex(null);
+        setFinishProcessing(false);
+        setPdfError(null);
+    }
     async function handleExtractionImages() {
         setFinishProcessing(false);
         setLoadingPdf(true);
@@ -387,7 +399,7 @@ function App() {
 
 
                 {images.length > 0 ? (
-                    <ExtractionResult totalPages={totalPages} handleDownloadAllImages={handleDownloadAllImages} selectedImages={selectedImages} setPreviewIndex={setPreviewIndex} setSelectedImages={setSelectedImages} handleDownloadImage={handleDownloadImage} handleFormatValue={handleFormatValue} handleDownloadSelectedImages={handleDownloadSelectedImages} images={images} fileName={fileName} />
+                    <ExtractionResult totalPages={totalPages} handleDownloadAllImages={handleDownloadAllImages} selectedImages={selectedImages} setPreviewIndex={setPreviewIndex} setSelectedImages={setSelectedImages} handleDownloadImage={handleDownloadImage} handleFormatValue={handleFormatValue} handleDownloadSelectedImages={handleDownloadSelectedImages} images={images} fileName={fileName} handleBackToExtraction={handleBackToExtraction} />
                 ) : (
                     <>
                         <div className="logo">

@@ -11,8 +11,11 @@ interface Props {
     handleDownloadSelectedImages: () => Promise<void>;
     selectedImages: Images[];
     handleDownloadAllImages: () => Promise<void>;
+    handleBackToExtraction: () => Promise<void>;
 }
-export default function ExtractionResult({ images, setSelectedImages, setPreviewIndex, handleFormatValue, handleDownloadImage, totalPages, fileName, handleDownloadSelectedImages, selectedImages, handleDownloadAllImages }: Props) {
+export default function ExtractionResult({ images, setSelectedImages, setPreviewIndex, handleFormatValue, handleDownloadImage, totalPages, fileName, handleDownloadSelectedImages, selectedImages, handleDownloadAllImages,handleBackToExtraction }: Props) {
+
+  
     return (
         <div className="input-field">
             <div className="extraction-summary">
@@ -218,7 +221,7 @@ export default function ExtractionResult({ images, setSelectedImages, setPreview
                 </div>
                 <div className="back-to-extraction">
                     <button
-                        onClick={handleDownloadSelectedImages}
+                        onClick={handleBackToExtraction}
                         className="download-btn selected-images"
                     >
                         <svg
