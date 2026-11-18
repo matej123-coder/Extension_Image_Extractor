@@ -19,9 +19,11 @@ import { retrievePDFInfo, savePDFInfo } from "./db/pdfDB";
 import FileUploader from "./component/FileUploader";
 import CurrentTab from "./component/CurrentTab";
 import PdfUrl from "./component/PdfUrl";
+import ExtractionResult from "./component/ExtractionResult";
 
 const ALLOWED_FORMATS: ImageFormat[] = ["png", "jpeg", "webp"];
 function App() {
+
     const [checkBoxValue, setCheckBoxValue] = useState<CheckBoxOptions>('currentTab');
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
@@ -35,6 +37,7 @@ function App() {
     const [pdfError, setPdfError] = useState<PdfError | null>(null);
     const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
+    const [totalPages, setTotalPages] = useState<number | null>(null);
 
     useEffect(() => {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -93,7 +96,7 @@ function App() {
         try {
             const pdf = await loadPdf(selectedFile);
             const thumbnail = await generatePdfThumbnail(pdf);
-
+            setTotalPages(pdf.numPages)
             setPdf(pdf);
             setPdfThumbnail(thumbnail);
         } catch (error) {
@@ -113,7 +116,7 @@ function App() {
                     const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
                     currentPdf = pdfFromUrl;
                     setPdf(pdfFromUrl);
-
+                    setTotalPages(pdfFromUrl.numPages)
                     const thumbnail = await generatePdfThumbnail(currentPdf);
                     setPdfThumbnail(thumbnail);
                     const pdfName = pdfUrl.split("/").at(pdfUrl.split("/").length - 1) ?? "document.pdf";
@@ -382,205 +385,53 @@ function App() {
                     </div>
                 ) : null}
 
-                <div className="logo">
-                    <div className="heading">
-                        <h1 className="project-name">ImageKO </h1>
-                        <h4 className="project-purpose">PDF Image Extractor</h4>
-                    </div>
-                    <img src="/images/logo.png" alt="Logo" />
-                </div>
 
-                <h2>
-                    Extract images from any PDF document. Preview, select, and download individual images or export them all together in a ZIP archive.
-                </h2>
-                <div className="radio-input-container">
-                    <div className="radio-button-field">
-                        <input type="radio" id="currentTab" name="file" value="currentTab" checked={checkBoxValue === 'currentTab'} onChange={() => setCheckBoxValue('currentTab')} />
-                        <label htmlFor="currentTab">Current Tab</label>
-                    </div>
-                    <div className="radio-button-field">
-                        <input type="radio" id="uploadFile" name="file" value="uploadFile" checked={checkBoxValue === 'fileUpload'} onChange={() => setCheckBoxValue('fileUpload')} />
-                        <label htmlFor="uploadFile">Upload File</label>
-                    </div>
-                    <div className="radio-button-field">
-                        <input type="radio" id="pdfUrl" name="file" value="pdfUrl" checked={checkBoxValue === 'pdfUrl'} onChange={() => setCheckBoxValue('pdfUrl')} />
-                        <label htmlFor="pdfUrl">PDF URL</label>
-                    </div>
-                </div>
-                {checkBoxValue === "currentTab" && (
-                    <CurrentTab fileName={fileName} pdfUrl={pdfUrl} />
-                )}
-                {checkBoxValue === "fileUpload" && (
-                    <FileUploader fileName={fileName} pdf={pdf} pdfThumbnail={pdfThumbnail} handleFileChange={handleFileChange} />
-                )}
-                {checkBoxValue === "pdfUrl" && (
-                    <PdfUrl setPdfUrl={setPdfUrl} />
-                )}
-                <div className="extract-btn">
-                    <button onClick={handleExtractionImages} disabled={!pdf && !pdfUrl}>
-                        {" "}
-                        Extract Images
-                    </button>
-                </div>
                 {images.length > 0 ? (
-                    <div className="image-section">
-                        <div className="header">
-                            <h1>All Images</h1>
-                            <div className="download-btn-all">
-                                <button
-                                    onClick={handleDownloadSelectedImages}
-                                    className="download-btn selected-images"
-                                    disabled={selectedImages.length === 0}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="800px"
-                                        height="800px"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                    >
-                                        <path
-                                            d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12"
-                                            stroke="white"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>{" "}
-                                    Download Selected
-                                </button>
-                                <button
-                                    onClick={handleDownloadAllImages}
-                                    className="download-btn"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="800px"
-                                        height="800px"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                    >
-                                        <path
-                                            d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12"
-                                            stroke="white"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>{" "}
-                                    Download All
-                                </button>
+                    <ExtractionResult totalPages={totalPages} handleDownloadAllImages={handleDownloadAllImages} selectedImages={selectedImages} setPreviewIndex={setPreviewIndex} setSelectedImages={setSelectedImages} handleDownloadImage={handleDownloadImage} handleFormatValue={handleFormatValue} handleDownloadSelectedImages={handleDownloadSelectedImages} images={images} fileName={fileName} />
+                ) : (
+                    <>
+                        <div className="logo">
+                            <div className="heading">
+                                <h1 className="project-name">ImageKO </h1>
+                                <h4 className="project-purpose">PDF Image Extractor</h4>
+                            </div>
+                            <img src="/images/logo.png" alt="Logo" />
+                        </div>
+
+                        <h2>
+                            Extract images from any PDF document. Preview, select, and download individual images or export them all together in a ZIP archive.
+                        </h2>
+                        <div className="radio-input-container">
+                            <div className="radio-button-field">
+                                <input type="radio" id="currentTab" name="file" value="currentTab" checked={checkBoxValue === 'currentTab'} onChange={() => setCheckBoxValue('currentTab')} />
+                                <label htmlFor="currentTab">Current Tab</label>
+                            </div>
+                            <div className="radio-button-field">
+                                <input type="radio" id="uploadFile" name="file" value="uploadFile" checked={checkBoxValue === 'fileUpload'} onChange={() => setCheckBoxValue('fileUpload')} />
+                                <label htmlFor="uploadFile">Upload File</label>
+                            </div>
+                            <div className="radio-button-field">
+                                <input type="radio" id="pdfUrl" name="file" value="pdfUrl" checked={checkBoxValue === 'pdfUrl'} onChange={() => setCheckBoxValue('pdfUrl')} />
+                                <label htmlFor="pdfUrl">PDF URL</label>
                             </div>
                         </div>
-
-                        <div className="image-table-container">
-                            <table className="image-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Index</th>
-                                        <th>Preview</th>
-                                        <th>Width</th>
-                                        <th>Height</th>
-                                        <th>Type</th>
-                                        <th>Page No.</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {images.map((image, index) => (
-                                        <tr key={index}>
-                                            <td>
-                                                <input
-                                                    type="checkbox"
-                                                    className="select-checkbox"
-                                                    onChange={(event) => {
-                                                        const { checked } = event.target;
-
-                                                        setSelectedImages((prev) =>
-                                                            checked
-                                                                ? [...prev, image]
-                                                                : prev.filter(
-                                                                    (selectImage) =>
-                                                                        selectImage.pageNumber !==
-                                                                        image.pageNumber ||
-                                                                        selectImage.paintIndex !==
-                                                                        image.paintIndex,
-                                                                ),
-                                                        );
-                                                    }}
-                                                />
-                                            </td>
-                                            <td>{index + 1}</td>
-                                            <td className="image-preview-cell">
-                                                <img
-                                                    src={image.imageUrl}
-                                                    alt={`Extracted image ${index + 1}`}
-                                                />
-                                            </td>
-
-                                            <td>{image.width}px</td>
-                                            <td>{image.height}px</td>
-                                            <td>{image.imageType.toUpperCase()}</td>
-                                            <td>{image.pageNumber}</td>
-
-                                            <td>
-                                                <div className="image-actions">
-                                                    <button
-                                                        className="preview-btn"
-                                                        onClick={() => {
-                                                            setPreviewIndex(index);
-                                                        }}
-                                                    >
-                                                        Preview
-                                                    </button>
-
-                                                    <div className="download-actions">
-                                                        <select
-                                                            name="selectFormat"
-                                                            id="selectFormat"
-                                                            aria-label={`Output format for image ${index + 1}`}
-                                                            value={image.imageType.toLowerCase()}
-                                                            onChange={(event) =>
-                                                                handleFormatValue(event, index)
-                                                            }
-                                                        >
-                                                            <option value="png">PNG</option>
-                                                            <option value="jpeg">JPEG</option>
-                                                            <option value="webp">WEBP</option>
-                                                        </select>
-
-                                                        <button
-                                                            className="download-btn"
-                                                            onClick={() => handleDownloadImage(index)}
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                width="800px"
-                                                                height="800px"
-                                                                viewBox="0 0 24 24"
-                                                                fill="none"
-                                                            >
-                                                                <path
-                                                                    d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12"
-                                                                    stroke="white"
-                                                                    stroke-width="2"
-                                                                    stroke-linecap="round"
-                                                                    stroke-linejoin="round"
-                                                                />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        {checkBoxValue === "currentTab" && (
+                            <CurrentTab fileName={fileName} pdfUrl={pdfUrl} />
+                        )}
+                        {checkBoxValue === "fileUpload" && (
+                            <FileUploader fileName={fileName} pdf={pdf} pdfThumbnail={pdfThumbnail} handleFileChange={handleFileChange} />
+                        )}
+                        {checkBoxValue === "pdfUrl" && (
+                            <PdfUrl setPdfUrl={setPdfUrl} />
+                        )}
+                        <div className="extract-btn">
+                            <button onClick={handleExtractionImages} disabled={!pdf && !pdfUrl}>
+                                {" "}
+                                Extract Images
+                            </button>
                         </div>
-                    </div>
-                ) : null}
+                    </>
+                )}
             </div>
             {pdf && previewIndex !== null && (
                 <PagePreview

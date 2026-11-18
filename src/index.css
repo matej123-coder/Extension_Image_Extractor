@@ -788,3 +788,94 @@ body {
     font-size: 0.78rem;
     line-height: 1.5;
 }
+.extraction-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background-color: #201d24;
+    border: 1px solid #39343e;
+    border-radius: 10px;
+}
+
+.extraction-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.completion-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #302a35;
+    color: #914394;
+}
+
+.extraction-summary-title {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.extraction-summary-title h2 {
+    margin: 0;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.extraction-summary-title p {
+    margin: 0;
+    color: #a79baa;
+    font-size: 0.8rem;
+}
+
+.extraction-summary-details {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+    padding-top: 15px;
+    border-top: 1px solid #39343e;
+}
+
+.summary-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.summary-label {
+    color: #a79baa;
+    font-size: 0.75rem;
+}
+
+.summary-value {
+    color: #f5f3f7;
+    font-size: 0.85rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.back-to-extraction{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+.back-to-extraction button{
+    padding: 0.6rem;
+}
+.left-arrow{
+    fill: white !important;
+    width: 15px !important;
+    height: 10px !important;
+}
