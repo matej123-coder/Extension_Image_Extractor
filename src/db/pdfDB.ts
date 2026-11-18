@@ -39,28 +39,28 @@ export async function savePDFInfo(
     pdf: PDFDocumentProxy | null,
     pdfFileName: string | null,
 ): Promise<void> {
+
+    const pdfFileInfo = pdf && pdfFileName
+        ? await pdf.getData()
+        : null;
+
     const db = await openDatabase();
 
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, "readwrite");
         const store = transaction.objectStore(STORE_NAME);
 
-        if (!pdf || !pdfFileName) {
+        if (!pdf || !pdfFileName || !pdfFileInfo) {
             store.delete("current");
         } else {
-            pdf.getData().then((pdfFileInfo) => {
-                const pdfInfo: PDFInfo = {
-                    id: "current",
-                    pdfFileName,
-                    pdf: new Uint8Array(pdfFileInfo),
-                    expiresAt: Date.now() + 20 * 60 * 1000,
-                };
+            const pdfInfo: PDFInfo = {
+                id: "current",
+                pdfFileName,
+                pdf: new Uint8Array(pdfFileInfo),
+                expiresAt: Date.now() + 20 * 60 * 1000,
+            };
 
-                store.put(pdfInfo);
-            }).catch((error) => {
-                transaction.abort();
-                reject(error);
-            });
+            store.put(pdfInfo);
         }
 
         transaction.oncomplete = () => {
@@ -79,6 +79,7 @@ export async function savePDFInfo(
         };
     });
 }
+
 export async function retrievePDFInfo(): Promise<{
     pdfFileName: string;
     pdf: PDFDocumentProxy;

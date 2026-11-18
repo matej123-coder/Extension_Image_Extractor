@@ -399,7 +399,7 @@ function App() {
 
 
                 {images.length > 0 ? (
-                    <ExtractionResult totalPages={totalPages} handleDownloadAllImages={handleDownloadAllImages} selectedImages={selectedImages} setPreviewIndex={setPreviewIndex} setSelectedImages={setSelectedImages} handleDownloadImage={handleDownloadImage} handleFormatValue={handleFormatValue} handleDownloadSelectedImages={handleDownloadSelectedImages} images={images} fileName={fileName} handleBackToExtraction={handleBackToExtraction} />
+                    <ExtractionResult totalPages={totalPages} handleDownloadAllImages={handleDownloadAllImages} selectedImages={selectedImages} setPreviewIndex={setPreviewIndex} setSelectedImages={setSelectedImages} handleDownloadImage={handleDownloadImage} handleFormatValue={handleFormatValue} handleDownloadSelectedImages={handleDownloadSelectedImages} images={images} fileName={fileName} handleBackToExtraction={handleBackToExtraction}  />
                 ) : (
                     <>
                         <div className="logo">
