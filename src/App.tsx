@@ -408,13 +408,13 @@ function App() {
                     </div>
                 </div>
                 {checkBoxValue === "currentTab" && (
-                    <CurrentTab />
+                    <CurrentTab fileName={fileName} pdfUrl={pdfUrl} />
                 )}
                 {checkBoxValue === "fileUpload" && (
                     <FileUploader fileName={fileName} pdf={pdf} pdfThumbnail={pdfThumbnail} handleFileChange={handleFileChange} />
                 )}
                 {checkBoxValue === "pdfUrl" && (
-                    <PdfUrl />
+                    <PdfUrl setPdfUrl={setPdfUrl} />
                 )}
                 <div className="extract-btn">
                     <button onClick={handleExtractionImages} disabled={!pdf && !pdfUrl}>

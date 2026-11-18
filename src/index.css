@@ -51,7 +51,7 @@ body {
 }
 
 .input-field {
-    padding-top: 2.5rem;
+    margin-top: 1.5rem;
     width: 100%;
 }
 
@@ -686,4 +686,105 @@ body {
     color: #a79baa;
     font-size: 0.75rem;
     margin-top: 10px;
+}
+.current-tab-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.current-tab-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.current-tab-header label {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.current-tab-header p {
+    color: #a79baa;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.current-tab-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid #39343e;
+    border-radius: 8px;
+    background-color: #201d24;
+}
+
+.status-indicator {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.current-tab-status.available .status-indicator {
+    background-color: #914394;
+}
+
+.current-tab-status.unavailable .status-indicator {
+    background-color: #a79baa;
+}
+
+.status-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.status-title {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-description {
+    color: #a79baa;
+    font-size: 0.75rem;
+}
+
+.current-tab-file {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    background-color: #302a35;
+    border: 1px solid #39343e;
+    border-radius: 7px;
+}
+
+.file-label {
+    color: #a79baa;
+    font-size: 0.75rem;
+}
+
+.file-name {
+    color: #f5f3f7;
+    font-size: 0.85rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.current-tab-hint {
+    padding: 12px;
+    background-color: #302a35;
+    border: 1px solid #39343e;
+    border-radius: 7px;
+    color: #a79baa;
+    font-size: 0.78rem;
+    line-height: 1.5;
 }
