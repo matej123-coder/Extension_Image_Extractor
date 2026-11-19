@@ -106,7 +106,7 @@ function App() {
         }
     }
     async function handleBackToExtraction(){
-         await saveImages([]);
+        await saveImages([]);
         await savePDFInfo(null, null);
 
         setImages([]);
@@ -117,6 +117,7 @@ function App() {
         setPreviewIndex(null);
         setFinishProcessing(false);
         setPdfError(null);
+        setInputPdfUrl(null);
     }
     async function handleExtractionImages() {
         setFinishProcessing(false);
@@ -125,7 +126,7 @@ function App() {
             let currentPdf = pdf;
             let fileInfoName = fileName;
 
-            const selectedUrl = pdfUrl || inputPdfUrl;
+            const selectedUrl = checkBoxValue === "currentTab" ? pdfUrl : checkBoxValue === "pdfUrl" ?  inputPdfUrl : null;
             if (selectedUrl) {
                 try {
                     const pdfFromUrl = await loadPdfFromUrl(selectedUrl);
