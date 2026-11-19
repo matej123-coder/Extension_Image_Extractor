@@ -1,10 +1,9 @@
 interface CurrentTabProps {
     pdfUrl: string | null;
-    fileName: string | null;
 
 }
 
-export default function CurrentTab({ pdfUrl, fileName }: CurrentTabProps) {
+export default function CurrentTab({ pdfUrl }: CurrentTabProps) {
     const isPdfAvailable = !!pdfUrl;
 
 
@@ -31,19 +30,11 @@ export default function CurrentTab({ pdfUrl, fileName }: CurrentTabProps) {
                 </div>
             </div>
 
-            {isPdfAvailable ? (
-                <div className="current-tab-file">
-                    <span className="file-label">Detected file</span>
-                    <span className="file-name" title={fileName ?? ""}>
-                        {fileName}
-                    </span>
-                </div>
-            ) : (
+            
                 <div className="current-tab-hint">
                     Open a PDF file in your browser, then reopen ImageKO to detect it.
                     Alternatively, select the PDF URL or Upload PDF option.
                 </div>
-            )}
         </div>
     );
 }

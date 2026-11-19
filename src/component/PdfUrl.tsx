@@ -1,8 +1,9 @@
 interface Props{ 
     setPdfUrl: React.Dispatch<React.SetStateAction<string | null>>;
+    inputPdfUrl : string | null;
 }
 
-export default function PdfUrl({setPdfUrl}: Props) {
+export default function PdfUrl({setPdfUrl,inputPdfUrl}: Props) {
     return (
         <>
             <div className="input-field">
@@ -15,6 +16,7 @@ export default function PdfUrl({setPdfUrl}: Props) {
                     type="url"
                     id="pdfUrl"
                     name="pdfUrl"
+                    value={inputPdfUrl || ""}
                     placeholder="https://example.com/document.pdf"
                     onChange={(event)=> setPdfUrl(event.target.value)}
                 />

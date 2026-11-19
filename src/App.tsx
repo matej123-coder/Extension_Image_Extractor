@@ -38,6 +38,7 @@ function App() {
     const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const [totalPages, setTotalPages] = useState<number | null>(null);
+    const [inputPdfUrl, setInputPdfUrl] = useState<string | null>(null);
 
     useEffect(() => {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -71,14 +72,14 @@ function App() {
 
     }, []);
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (pdfUrl) {
-            setPdfError({
-                title: "PDF Already Loaded",
-                message: "You cannot upload a PDF while being on an active tab with PDF URL.",
-            });
-            event.target.value = "";
-            return;
-        }
+        // if (pdfUrl) {
+        //     setPdfError({
+        //         title: "PDF Already Loaded",
+        //         message: "You cannot upload a PDF while being on an active tab with PDF URL.",
+        //     });
+        //     event.target.value = "";
+        //     return;
+        // }
         const selectedFile = event.target.files?.[0] || null;
 
         if (!selectedFile) {
@@ -123,15 +124,17 @@ function App() {
         try {
             let currentPdf = pdf;
             let fileInfoName = fileName;
-            if (pdfUrl) {
+
+            const selectedUrl = pdfUrl || inputPdfUrl;
+            if (selectedUrl) {
                 try {
-                    const pdfFromUrl = await loadPdfFromUrl(pdfUrl);
+                    const pdfFromUrl = await loadPdfFromUrl(selectedUrl);
                     currentPdf = pdfFromUrl;
                     setPdf(pdfFromUrl);
                     setTotalPages(pdfFromUrl.numPages)
                     const thumbnail = await generatePdfThumbnail(currentPdf);
                     setPdfThumbnail(thumbnail);
-                    const pdfName = pdfUrl.split("/").at(pdfUrl.split("/").length - 1) ?? "document.pdf";
+                    const pdfName = selectedUrl.split("/").at(selectedUrl.split("/").length - 1) ?? "document.pdf";
                     const clearPDFName = decodeURIComponent(pdfName);
                     fileInfoName = clearPDFName;
                     setFileName(clearPDFName);
@@ -428,16 +431,16 @@ function App() {
                             </div>
                         </div>
                         {checkBoxValue === "currentTab" && (
-                            <CurrentTab fileName={fileName} pdfUrl={pdfUrl} />
+                            <CurrentTab  pdfUrl={pdfUrl} />
                         )}
                         {checkBoxValue === "fileUpload" && (
                             <FileUploader fileName={fileName} pdf={pdf} pdfThumbnail={pdfThumbnail} handleFileChange={handleFileChange} />
                         )}
                         {checkBoxValue === "pdfUrl" && (
-                            <PdfUrl setPdfUrl={setPdfUrl} />
+                            <PdfUrl setPdfUrl={setInputPdfUrl} inputPdfUrl={inputPdfUrl} />
                         )}
                         <div className="extract-btn">
-                            <button onClick={handleExtractionImages} disabled={!pdf && !pdfUrl}>
+                            <button onClick={handleExtractionImages} disabled={checkBoxValue === "fileUpload" ? !pdf : checkBoxValue === "currentTab" ? !pdfUrl: !inputPdfUrl }>
                                 {" "}
                                 Extract Images
                             </button>
