@@ -1,5 +1,4 @@
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
-import generatePdfThumbnail from "../pdf/generateThumbnail";
 import pdfjsLib from "../pdf/pdf";
 
 const DB_NAME = "pdf"
@@ -11,6 +10,7 @@ interface PDFInfo {
     pdfFileName: string;
     pdf: Uint8Array;
     expiresAt: number;
+    totalPages: number;
 
 }
 
@@ -38,6 +38,7 @@ export default function openDatabase(): Promise<IDBDatabase> {
 export async function savePDFInfo(
     pdf: PDFDocumentProxy | null,
     pdfFileName: string | null,
+    totalPages: number | null
 ): Promise<void> {
 
     const pdfFileInfo = pdf && pdfFileName
@@ -50,12 +51,13 @@ export async function savePDFInfo(
         const transaction = db.transaction(STORE_NAME, "readwrite");
         const store = transaction.objectStore(STORE_NAME);
 
-        if (!pdf || !pdfFileName || !pdfFileInfo) {
+        if (!pdf || !pdfFileName || !pdfFileInfo || !totalPages) {
             store.delete("current");
         } else {
             const pdfInfo: PDFInfo = {
                 id: "current",
                 pdfFileName,
+                totalPages,
                 pdf: new Uint8Array(pdfFileInfo),
                 expiresAt: Date.now() + 20 * 60 * 1000,
             };
@@ -83,7 +85,7 @@ export async function savePDFInfo(
 export async function retrievePDFInfo(): Promise<{
     pdfFileName: string;
     pdf: PDFDocumentProxy;
-    thumbnail: string;
+   totalPages: number;
 }> {
     const db = await openDatabase();
 
@@ -103,11 +105,12 @@ export async function retrievePDFInfo(): Promise<{
                 data: new Uint8Array(session.pdf)
             }).promise
 
-            const thumbnail = await generatePdfThumbnail(pdf);
+            
             resolve({
                 pdf,
                 pdfFileName: session.pdfFileName,
-                thumbnail
+                totalPages: session.totalPages
+                
             })
         }
         request.onerror = () => {

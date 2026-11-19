@@ -54,7 +54,7 @@ function App() {
                 const storedImages = await getImages();
                 const pdfInfo = await retrievePDFInfo();
                 if (pdfInfo) {
-                    setPdfThumbnail(pdfInfo.thumbnail);
+                    setTotalPages(pdfInfo.totalPages);
                     setFileName(pdfInfo.pdfFileName);
                     setPdf(pdfInfo.pdf);
                 }
@@ -72,14 +72,7 @@ function App() {
 
     }, []);
     async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-        // if (pdfUrl) {
-        //     setPdfError({
-        //         title: "PDF Already Loaded",
-        //         message: "You cannot upload a PDF while being on an active tab with PDF URL.",
-        //     });
-        //     event.target.value = "";
-        //     return;
-        // }
+    
         const selectedFile = event.target.files?.[0] || null;
 
         if (!selectedFile) {
@@ -107,7 +100,7 @@ function App() {
     }
     async function handleBackToExtraction(){
         await saveImages([]);
-        await savePDFInfo(null, null);
+        await savePDFInfo(null, null,null);
 
         setImages([]);
         setSelectedImages([]);
@@ -118,6 +111,7 @@ function App() {
         setFinishProcessing(false);
         setPdfError(null);
         setInputPdfUrl(null);
+        setTotalPages(null);
     }
     async function handleExtractionImages() {
         setFinishProcessing(false);
@@ -125,12 +119,13 @@ function App() {
         try {
             let currentPdf = pdf;
             let fileInfoName = fileName;
-
+            let pagesNumber = totalPages;
             const selectedUrl = checkBoxValue === "currentTab" ? pdfUrl : checkBoxValue === "pdfUrl" ?  inputPdfUrl : null;
             if (selectedUrl) {
                 try {
                     const pdfFromUrl = await loadPdfFromUrl(selectedUrl);
                     currentPdf = pdfFromUrl;
+                    pagesNumber = pdfFromUrl.numPages
                     setPdf(pdfFromUrl);
                     setTotalPages(pdfFromUrl.numPages)
                     const thumbnail = await generatePdfThumbnail(currentPdf);
@@ -158,7 +153,7 @@ function App() {
             const extractedImages = await extractImage(currentPdf);
             setImages(extractedImages);
             await saveImages(extractedImages);
-            await savePDFInfo(currentPdf, fileInfoName);
+            await savePDFInfo( currentPdf,fileInfoName,pagesNumber);
 
         } catch (error) {
             console.error("Failed to extract images", error);
