@@ -874,3 +874,42 @@ body {
 .back-to-extraction button{
     padding: 1rem;
 }
+.link-pdf {
+    position: relative;
+    display: inline-block;
+    color: #d8c4df;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.link-pdf::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background: #773179;
+    border-radius: 2px;
+    transition: width 0.2s ease;
+}
+
+.link-pdf:hover {
+    color: #a79baa;
+}
+
+.link-pdf:hover::after {
+    width: 100%;
+}
+
+.link-pdf:active {
+    color: #5F255F;
+}
+
+.link-pdf:focus-visible {
+    outline: 2px solid #d8c4df;
+    outline-offset: 4px;
+    border-radius: 2px;
+}

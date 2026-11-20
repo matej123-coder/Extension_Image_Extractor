@@ -1,9 +1,11 @@
+import type { CheckBoxOptions } from "../types/types";
+
 interface CurrentTabProps {
     pdfUrl: string | null;
-
+    setCheckBoxValue: React.Dispatch<React.SetStateAction<CheckBoxOptions>>;
 }
 
-export default function CurrentTab({ pdfUrl }: CurrentTabProps) {
+export default function CurrentTab({ pdfUrl,setCheckBoxValue }: CurrentTabProps) {
     const isPdfAvailable = !!pdfUrl;
 
 
@@ -32,8 +34,8 @@ export default function CurrentTab({ pdfUrl }: CurrentTabProps) {
 
             
                 <div className="current-tab-hint">
-                    Open a PDF file in your browser, then reopen ImageKO to detect it.
-                    Alternatively, select the PDF URL or Upload PDF option.
+                    Open a PDF file in your browser please make sure it is publicly accessible, then reopen ImageKO to detect it.
+                    Alternatively, select the <a className="link-pdf" onClick={()=> setCheckBoxValue('pdfUrl')}> PDF URL</a> or <a className="link-pdf" onClick={()=>setCheckBoxValue("fileUpload")}>Upload PDF</a> option.
                 </div>
         </div>
     );

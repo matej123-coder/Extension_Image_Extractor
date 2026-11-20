@@ -136,7 +136,14 @@ function App() {
                     setFileName(clearPDFName);
                 } catch (error) {
                     console.error("Failed to load PDF from URL:", error);
+                    if(error instanceof Error && (error.name == "UnexpectedResponseException" || error.name === "ResponseException")){
+                        setPdfError(getPdfErrorMessage(error));
+                        setCheckBoxValue("fileUpload"); 
+                        return;   
+                    }
                     setPdfError(getPdfErrorMessage(error));
+                    
+                    
                     return;
                 }
             }
@@ -427,7 +434,7 @@ function App() {
                             </div>
                         </div>
                         {checkBoxValue === "currentTab" && (
-                            <CurrentTab  pdfUrl={pdfUrl} />
+                            <CurrentTab  setCheckBoxValue={setCheckBoxValue} pdfUrl={pdfUrl} />
                         )}
                         {checkBoxValue === "fileUpload" && (
                             <FileUploader fileName={fileName} pdf={pdf} pdfThumbnail={pdfThumbnail} handleFileChange={handleFileChange} />

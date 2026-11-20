@@ -9,7 +9,7 @@ export default function PdfUrl({setPdfUrl,inputPdfUrl}: Props) {
             <div className="input-field">
                 <div className="pdf-url-header">
                     <label htmlFor="pdfUrl">PDF URL</label>
-                    <p>Enter the URL of a PDF file hosted online.</p>
+                    <p>Enter the URL of a PDF file publicly accessible.</p>
                 </div>
 
                 <input

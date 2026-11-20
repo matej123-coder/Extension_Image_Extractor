@@ -19,7 +19,7 @@ export default function getPdfErrorMessage(error: unknown): PdfError {
             case "ResponseException":
                 return {
                     title: "Unable to Access PDF",
-                    message: "The server returned an unexpected response. The PDF may require authentication or may not be publicly accessible.",
+                    message: "The PDF may require authentication or may not be publicly accessible. Please upload it in the upload field",
                 };
 
             case "PasswordException":
